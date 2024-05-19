@@ -7,12 +7,14 @@ function NavBar() {
       <NavLink
         to="/"
         className="navbar"
+        onClick={() => console.log("Home link clicked")}
       >
         Home
       </NavLink>
       <NavLink
         to="/users"
         className="navbar"
+        onClick={() => console.log("User List link clicked")}
       >
         User List
       </NavLink>

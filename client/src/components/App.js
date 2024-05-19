@@ -11,9 +11,10 @@ function App() {
             key={index}
             path={route.path}
             exact={route.exact}
-            render={(props) => (
-              <route.component {...props} routes={route.routes} />
-            )}
+            render={(props) => {
+              console.log("Rendering route:", route.path);
+              return <route.component {...props} routes={route.routes} />;
+            }}
           />
         ))}
       </Switch>

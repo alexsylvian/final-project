@@ -7,11 +7,13 @@ const routes = [
     {
       path: "/",
       component: Home,
+      exact: true,
     //   errorElement: <ErrorPage />
     },
     {
       path: "/users",
       component: UsersPage,
+      exact: true,
     //   errorElement: <ErrorPage />
     }
     // {
