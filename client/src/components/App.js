@@ -1,14 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
-import Navbar from "./Navbar";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import routes from "../routes";
 
 function App() {
-  return(
-    <div>
-     <h1>Client Model - Let's Go!</h1>
-     <h1>Welcome, User! Here are your Projects:</h1>
-    </div>
-  )
+  return (
+    <Router>
+      <Switch>
+        {routes.map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            exact={route.exact}
+            render={(props) => (
+              <route.component {...props} routes={route.routes} />
+            )}
+          />
+        ))}
+      </Switch>
+    </Router>
+  );
 }
 
 export default App;

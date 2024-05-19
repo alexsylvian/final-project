@@ -1,19 +1,23 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
+// import "./NavBar.css";
 
-// const Navbar = () => {
-//   return (
-//     <nav>
-//       <div className="container">
-//         <Link to="/" className="brand-logo">Task Manager</Link>
-//         <ul className="right">
-//           <li><Link to="/projects">Projects</Link></li>
-//           <li><Link to="/users">Users</Link></li>
-//           {/* Add more navigation links as needed */}
-//         </ul>
-//       </div>
-//     </nav>
-//   );
-// };
+function NavBar() {
+  return (
+    <nav>
+      <NavLink
+        to="/"
+        className="navbar"
+      >
+        Home
+      </NavLink>
+      <NavLink
+        to="/users"
+        className="navbar"
+      >
+        User List
+      </NavLink>
+    </nav>
+  );
+};
 
-// export default Navbar;
+export default NavBar;
