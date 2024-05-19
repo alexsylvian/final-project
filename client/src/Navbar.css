@@ -1,0 +1,13 @@
+.navbar-link {
+    color: #d41a1a; /* Set link color to white */
+    text-decoration: none; /* Remove underline from links */
+    margin-right: 20px; /* Add margin between links */
+  }
+  
+  .navbar-link:hover {
+    text-decoration: underline; /* Add underline on hover */
+  }
+  
+  .active {
+    text-decoration: underline; /* Add underline to active link */
+  }
