@@ -6,3 +6,15 @@ from config import db
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    subtasks = db.relationship('Subtask', backref='project', lazy=True)
+
+    def __repr__(self):
+        return f"Project(id={self.id}, name={self.name})"
+
+class Subtask(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Subtask(id={self.id}, name={self.name}, project_id={self.project_id})"

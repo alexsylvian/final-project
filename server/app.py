@@ -23,7 +23,15 @@ def index():
 def projects():
     if request.method == 'GET':
         projects = get_projects()
-        return jsonify([project.__dict__ for project in projects])
+        project_data = []
+        for project in projects:
+            project_info = {
+                'id': project.id,
+                'name': project.name,
+                'subtasks': [subtask.name for subtask in project.subtasks]  # Retrieve subtask names
+            }
+            project_data.append(project_info)
+        return jsonify(project_data)
     elif request.method == 'POST':
         data = request.get_json()
         name = data.get('name')
