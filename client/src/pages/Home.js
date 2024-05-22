@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from "../components/Navbar";
 import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
 
 function Home() {
-  const [projects, setProjects] = useState([
-    { id: 1, name: 'Clean House', subtasks: ['Clean Kitchen', 'Clean Bedroom', 'Clean Bathroom'] },
-    { id: 2, name: 'Project 2', subtasks: [] },
-    { id: 3, name: 'Project 3', subtasks: [] }
-  ]);
+  const [projects, setProjects] = useState([]);
 
-  function addProject(name) {
-    const newProject = { id: Date.now(), name, subtasks: [] };
+  useEffect(() => {
+    fetch('/projects')
+      .then(response => response.json())
+      .then(data => setProjects(data))
+      .catch(error => console.error('Error fetching projects:', error));
+  }, []);
+
+  function handleAddProject(newProject) {
     setProjects([...projects, newProject]);
-  };
+  }
 
   return (
     <div>
@@ -27,7 +29,7 @@ function Home() {
             <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} />
           ))}
         </div>
-        <ProjectForm addProject={addProject} />
+        <ProjectForm addProject={handleAddProject} />
       </div>
     </div>
   );

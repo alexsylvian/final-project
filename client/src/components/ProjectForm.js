@@ -3,11 +3,29 @@ import React, { useState } from 'react';
 const ProjectForm = ({ addProject }) => {
   const [name, setName] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim()) return;
-    addProject(name);
-    setName('');
+
+    try {
+      const response = await fetch('http://localhost:5555/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add project');
+      }
+
+      const data = await response.json();
+      addProject(data); // Update the state with the newly added project
+      setName('');
+    } catch (error) {
+      console.error('Error adding project:', error);
+    }
   };
 
   return (
