@@ -8,7 +8,7 @@ from faker import Faker
 
 # Local imports
 from app import app, db
-from models import Project
+from models import Project, Subtask
 
 if __name__ == '__main__':
     fake = Faker()
@@ -21,6 +21,9 @@ if __name__ == '__main__':
                     name=fake.word()  # Generate a random word for project name
                 )
                 db.session.add(project)
+                for _ in range(3):  # Seed 3 subtasks for each project
+                    subtask = Subtask(name=fake.sentence(), project=project)
+                    db.session.add(subtask)
             # Commit changes to the database
             db.session.commit()
             print("Seed complete!")
