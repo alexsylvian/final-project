@@ -3,4 +3,6 @@ from sqlalchemy.ext.associationproxy import association_proxy
 
 from config import db
 
-# Models go here!
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import NavBar from "../components/Navbar";
+import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
 
 function Home() {
@@ -9,7 +10,7 @@ function Home() {
     { id: 3, name: 'Project 3', subtasks: [] }
   ]);
 
-  const addProject = (name) => {
+  function addProject(name) {
     const newProject = { id: Date.now(), name, subtasks: [] };
     setProjects([...projects, newProject]);
   };
@@ -20,18 +21,12 @@ function Home() {
       <h1>Welcome to Your Task Manager!</h1>
       <div>
         <h2>Projects</h2>
-        <ul>
+        <div className="project-cards">
+          {/* Render ProjectCard components for each project */}
           {projects.map((project) => (
-            <li key={project.id}>
-              {project.name}
-              <ul>
-                {project.subtasks.map((subtask, index) => (
-                  <li key={index}>{subtask}</li>
-                ))}
-              </ul>
-            </li>
+            <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} />
           ))}
-        </ul>
+        </div>
         <ProjectForm addProject={addProject} />
       </div>
     </div>

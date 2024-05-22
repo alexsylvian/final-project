@@ -5,3 +5,35 @@
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
+.project-card {
+  background-color: #998991;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.project-card h2 {
+  margin-bottom: 8px;
+}
+
+.project-card ul {
+  margin-top: 8px;
+  padding-left: 20px;
+}
+
+.project-card li {
+  list-style-type: disc;
+}
+
+.project-card a {
+  display: block;
+  margin-top: 16px;
+  color: #000000;
+  text-decoration: none;
+}
+
+.project-card a:hover {
+  text-decoration: underline;
+}
+
