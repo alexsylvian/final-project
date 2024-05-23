@@ -9,7 +9,6 @@ function Home() {
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
 
-  // Handler function to set the user after successful login
   function handleLogin(user) {
     setUser(user);
   }
@@ -19,6 +18,14 @@ function Home() {
       .then(response => response.json())
       .then(data => setProjects(data))
       .catch(error => console.error('Error fetching projects:', error));
+  }, []);
+
+  useEffect(() => {
+    fetch("/check_session").then((response) => {
+      if (response.ok) {
+        response.json().then((user) => setUser(user));
+      }
+    });
   }, []);
 
   function handleAddProject(newProject) {
@@ -43,6 +50,7 @@ function Home() {
         <Login onLogin={handleLogin} />
       ) : (
       <div>
+        <h2>Welcome, {user.username}!</h2>
         <input
           type="text"
           placeholder="Search projects by name"

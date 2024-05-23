@@ -1,8 +1,17 @@
 import { NavLink } from "react-router-dom";
 import "../Navbar.css"
 
-function NavBar() {
+function NavBar({ onLogout }) {
+  function handleLogout() {
+    fetch("/logout", {
+      method: "DELETE",
+    }).then(() => onLogout());
+  }
   return (
+    <>
+    <header>
+      <button onClick={handleLogout}>Logout</button>
+    </header>
     <nav>
       <NavLink
         to="/"
@@ -22,6 +31,7 @@ function NavBar() {
         User List
       </NavLink>
     </nav>
+    </>
   );
 };
 
