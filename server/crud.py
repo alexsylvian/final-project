@@ -1,7 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-
+from config import db
 from models import Project
 
 def add_project(name):
