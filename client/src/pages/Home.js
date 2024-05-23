@@ -13,6 +13,10 @@ function Home() {
     setUser(user);
   }
 
+  function handleLogout(user) {
+    setUser(null)
+  }
+
   useEffect(() => {
     fetch('/projects')
       .then(response => response.json())
@@ -36,7 +40,6 @@ function Home() {
     setSearchedProjects(e.target.value);
   }
 
-  // Filter projects based on search query
   const filteredProjects = projects.filter(project =>
     project.name.toLowerCase().includes(searchedProjects.toLowerCase())
   );
@@ -44,7 +47,7 @@ function Home() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar onLogout={handleLogout} user={user}/>
       <h1>Welcome to Your Task Manager!</h1>
       {!user ? (
         <Login onLogin={handleLogin} />
