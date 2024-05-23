@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "../components/Navbar";
 import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
+import Login from '../components/Login';
 
 function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
+  const [user, setUser] = useState(null);
+
+  // Handler function to set the user after successful login
+  function handleLogin(user) {
+    setUser(user);
+  }
 
   useEffect(() => {
     fetch('/projects')
@@ -32,6 +39,9 @@ function Home() {
     <div>
       <NavBar />
       <h1>Welcome to Your Task Manager!</h1>
+      {!user ? (
+        <Login onLogin={handleLogin} />
+      ) : (
       <div>
         <input
           type="text"
@@ -41,13 +51,12 @@ function Home() {
         />
         <h2>Projects</h2>
         <div className="project-cards">
-          {/* Render ProjectCard components for each project */}
           {filteredProjects.map((project) => (
             <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} />
           ))}
         </div>
         <ProjectForm addProject={handleAddProject} />
-      </div>
+      </div> )}
     </div>
   );
 };
