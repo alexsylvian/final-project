@@ -25,7 +25,6 @@ function RegistrationForm({ onRegister }) {
         return response.json();
       })
       .then((data) => {
-        // Call onRegister callback with registered user data
         onRegister(data);
       })
       .catch((error) => {

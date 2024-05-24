@@ -1,5 +1,5 @@
 import Home from "./pages/Home"
-// import ProjectPage from "./pages/ProjectPage";
+import ProjectPage from "./pages/ProjectPage";
 import UsersPage from "./pages/UsersPage"
 // import ErrorPage from "./pages/ErrorPage";
 
@@ -15,12 +15,13 @@ const routes = [
       component: UsersPage,
       exact: true,
     //   errorElement: <ErrorPage />
+    },
+    {
+      path: "/project/:id",
+      component: ProjectPage,
+      exact: true
+      // errorElement: <ErrorPage />
     }
-    // {
-    //   path: "/project/:id",
-    //   element: <ProjectPage />,
-    //   errorElement: <ErrorPage />
-    // }
 ]
 
 export default routes;

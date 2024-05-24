@@ -11,7 +11,7 @@ from crud import add_project, get_projects, add_user
 # Local imports
 from config import app, db, api
 # Add your model imports
-from models import User
+from models import User, Project
 
 # Views go here!
 class Login(Resource):
@@ -20,6 +20,7 @@ class Login(Resource):
         user = User.query.filter(
             User.username == request.get_json()['username']
         ).first()
+        print(user.username)
 
         session['user_id'] = user.id
         return user.to_dict()
@@ -70,6 +71,25 @@ def projects():
             return jsonify({"message": "Project added successfully"})
         else:
             return jsonify({"error": "Name field is required"}), 400
+        
+@app.route('/project/<int:id>', methods=['GET'])
+def get_project(id):
+    print("Received project ID:", id)
+    project = Project.query.get(id)
+
+    if project:
+        # Convert the project data to a dictionary
+        project_data = {
+            'id': project.id,
+            'name': project.name,
+            'subtasks': [subtask.name for subtask in project.subtasks]
+            # Include any other relevant project details
+        }
+        # Return the project data as JSON response
+        return jsonify(project_data)
+    else:
+        # If project with the specified ID is not found, return a 404 error
+        return jsonify({'error': 'Project not found'}), 404
         
 @app.route('/users', methods=['GET'])
 def get_users():
