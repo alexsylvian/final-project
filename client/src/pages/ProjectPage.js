@@ -5,9 +5,8 @@ import { useParams } from "react-router-dom";
 function ProjectPage() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [newSubtask, setNewSubtask] = useState(""); // State for the new subtask input
     const { id } = useParams(); // Extracting the project ID from the URL
-
-    console.log("Project ID:", id);
 
     useEffect(() => {
         setLoading(true)
@@ -28,16 +27,31 @@ function ProjectPage() {
             });
     }, [id]); // Dependency array ensures this effect runs when the ID changes
 
-    console.log(id)
+    const handleNewSubtaskChange = (event) => {
+        setNewSubtask(event.target.value); // Update the state when input value changes
+    };
+
+    const handleAddSubtask = (event) => {
+        event.preventDefault(); // Prevent form submission
+        if (newSubtask.trim() !== "") {
+            // Add the new subtask to the project
+            setProject(prevProject => ({
+                ...prevProject,
+                subtasks: [...prevProject.subtasks, newSubtask.trim()]
+            }));
+            // Reset the input field after adding the subtask
+            setNewSubtask("");
+        }
+    };
 
     return (
         <>
             <NavBar />
             <div>
                 <h1>Project Details</h1>
-                {loading ? ( // Conditionally render loading indicator while fetching data
+                {loading ? (
                     <p>Loading...</p>
-                ) : project ? ( // Conditionally render project details if available
+                ) : project ? (
                     <div>
                         <h2>{project.name}</h2>
                         <ul>
@@ -45,12 +59,23 @@ function ProjectPage() {
                                 <li key={subtask}>{subtask}</li>
                             ))}
                         </ul>
+                        {/* Form for adding new subtasks */}
+                        <form onSubmit={handleAddSubtask}>
+                            <input
+                                type="text"
+                                value={newSubtask}
+                                onChange={handleNewSubtaskChange}
+                                placeholder="Enter new subtask"
+                            />
+                            <button type="submit">Add Subtask</button>
+                        </form>
                     </div>
                 ) : (
-                    <p>Project not found</p> // Render error message if project details are not available
+                    <p>Project not found</p>
                 )}
             </div>
         </>
     );
 }
+
 export default ProjectPage;

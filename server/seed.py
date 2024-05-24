@@ -26,7 +26,8 @@ if __name__ == '__main__':
             # Seed projects and subtasks
             for _ in range(10):  # Seed 10 projects
                 project = Project(
-                    name=fake.word()  # Generate a random word for project name
+                    name=fake.word(),  # Generate a random word for project name
+                    created_at=fake.date_time_this_year()
                 )
                 db.session.add(project)
                 for _ in range(3):  # Seed 3 subtasks for each project

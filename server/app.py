@@ -11,7 +11,7 @@ from crud import add_project, get_projects, add_user
 # Local imports
 from config import app, db, api
 # Add your model imports
-from models import User, Project
+from models import User, Project, Subtask
 
 # Views go here!
 class Login(Resource):
@@ -89,10 +89,23 @@ def get_project(id):
         project_data = {
             'id': project.id,
             'name': project.name,
-            'subtasks': [subtask.name for subtask in project.subtasks]
+            'subtasks': [subtask.name for subtask in project.subtasks],
+            # 'created-at': project.created_at
         }
         print(project.name)
         return jsonify(project_data)
+    else:
+        return jsonify({'error': 'Project not found'}), 404
+    
+@app.route('/project/<id>/subtasks', methods=['GET'])
+def get_project_subtasks(id):
+    print("Received project ID:", id)
+    project = Project.query.get(id)
+
+    if project:
+        subtasks_data = [subtask.name for subtask in project.subtasks]
+        print("Subtasks:", subtasks_data)
+        return jsonify(subtasks_data)
     else:
         return jsonify({'error': 'Project not found'}), 404
         
