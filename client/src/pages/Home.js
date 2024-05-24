@@ -10,16 +10,19 @@ function Home() {
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
 
+
   function handleLogin(user) {
     setUser(user);
   }
 
-  function handleLogout(user) {
+  function handleLogout() {
     setUser(null)
   }
 
-    function handleRegister(user) {
+  function handleRegister(user) {
+    console.log("User registered:", user);
     setUser(user);
+    console.log("Updated user state:", user);
   }
 
   useEffect(() => {
