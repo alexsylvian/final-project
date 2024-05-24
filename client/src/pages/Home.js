@@ -3,6 +3,7 @@ import NavBar from "../components/Navbar";
 import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
 import Login from '../components/Login';
+import RegistrationForm from '../components/RegistrationForm';
 
 function Home() {
   const [projects, setProjects] = useState([]);
@@ -15,6 +16,10 @@ function Home() {
 
   function handleLogout(user) {
     setUser(null)
+  }
+
+    function handleRegister(user) {
+    setUser(user);
   }
 
   useEffect(() => {
@@ -44,13 +49,16 @@ function Home() {
     project.name.toLowerCase().includes(searchedProjects.toLowerCase())
   );
 
-
   return (
     <div>
+      
       <NavBar onLogout={handleLogout} user={user}/>
       <h1>Welcome to Your Task Manager!</h1>
       {!user ? (
-        <Login onLogin={handleLogin} />
+        <>
+          <Login onLogin={handleLogin} />
+          <RegistrationForm onRegister={handleRegister} />
+        </>
       ) : (
       <div>
         <h2>Welcome, {user.username}!</h2>
