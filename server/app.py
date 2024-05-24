@@ -6,7 +6,7 @@
 from flask import request, jsonify, session
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
-from crud import add_project, get_projects
+from crud import add_project, get_projects, add_user
 
 # Local imports
 from config import app, db, api
@@ -76,6 +76,19 @@ def get_users():
     users = User.query.all()
     user_data = [{'id': user.id, 'username': user.username} for user in users]
     return jsonify(user_data)
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data.get('username')
+
+    # Check if username or email already exists
+    if User.query.filter_by(username=username).first() is not None:
+        return jsonify({'message': 'Username already exists'}), 400
+    
+    add_user(username)
+
+    return jsonify({'message': 'User registered successfully'}), 201
 
 
 if __name__ == '__main__':

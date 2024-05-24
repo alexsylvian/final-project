@@ -1,5 +1,5 @@
 from config import db
-from models import Project
+from models import Project, User
 
 def add_project(name):
     project = Project(name=name)
@@ -8,3 +8,11 @@ def add_project(name):
 
 def get_projects():
     return Project.query.all()
+
+def add_user(username):
+    user = User(username = username)
+    db.session.add(user)
+    db.session.commit()
+
+def get_users():
+    return User.query.all()
