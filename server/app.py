@@ -86,9 +86,12 @@ def register():
     if User.query.filter_by(username=username).first() is not None:
         return jsonify({'message': 'Username already exists'}), 400
     
-    add_user(username)
+    user = User(username = username)
+    db.session.add(user)
+    db.session.commit()
+    session['user_id'] = user.id
 
-    return jsonify({'message': 'User registered successfully'}), 201
+    return jsonify(user.to_dict()), 201
 
 
 if __name__ == '__main__':

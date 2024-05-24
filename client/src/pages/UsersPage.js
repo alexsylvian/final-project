@@ -13,15 +13,26 @@ function UsersPage(){
     
     return(
         <>
-        <NavBar />
-        <div>
-            <h1>USERS</h1>
-            <div className="users">
-                {users.map((user) => (
-                    <h1 key={user.id}>{user.username}</h1>
-                ))}
+            <NavBar />
+            <div>
+                <h1>Users</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((user) => (
+                            <tr key={user.id}>
+                                <td>{user.id}</td>
+                                <td>{user.username}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-        </div>   
         </>
     )
 }

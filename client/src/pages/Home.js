@@ -9,6 +9,7 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([])
 
 
   function handleLogin(user) {
@@ -22,6 +23,7 @@ function Home() {
   function handleRegister(user) {
     console.log("User registered:", user);
     setUser(user);
+    setUsers([...users, user]);
     console.log("Updated user state:", user);
   }
 
@@ -29,6 +31,13 @@ function Home() {
     fetch('/projects')
       .then(response => response.json())
       .then(data => setProjects(data))
+      .catch(error => console.error('Error fetching projects:', error));
+  }, []);
+
+  useEffect(() => {
+    fetch('/users')
+      .then(response => response.json())
+      .then(data => setUsers(data))
       .catch(error => console.error('Error fetching projects:', error));
   }, []);
 
@@ -56,7 +65,11 @@ function Home() {
     <div>
       
       <NavBar onLogout={handleLogout} user={user}/>
-      <h1>Welcome to Your Task Manager!</h1>
+      {!user ? (
+        <h1>Please Login</h1>
+      ) : (
+        <h1>Welcome to Your Task Manager, {user.username}!</h1>
+      )}
       {!user ? (
         <>
           <Login onLogin={handleLogin} />
@@ -64,7 +77,7 @@ function Home() {
         </>
       ) : (
       <div>
-        <h2>Welcome, {user.username}!</h2>
+        <p>Hello, {user.username}</p>
         <input
           type="text"
           placeholder="Search projects by name"
