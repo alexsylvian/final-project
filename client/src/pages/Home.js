@@ -28,7 +28,6 @@ function Home() {
   }
 
   useEffect(() => {
-    console.log('?')
     fetch('/projects')
       .then(response => response.json())
       .then(data => setProjects(data))

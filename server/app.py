@@ -67,8 +67,16 @@ def projects():
         data = request.get_json()
         name = data.get('name')
         if name:
-            add_project(name)
-            return jsonify({"message": "Project added successfully"})
+            project = Project(name=name)
+            db.session.add(project)
+            db.session.commit()
+            project_data = {
+            'id': project.id,
+            'name': project.name,
+            'subtasks': [subtask.name for subtask in project.subtasks]
+        }
+            print(project.name)
+            return jsonify(project_data)
         else:
             return jsonify({"error": "Name field is required"}), 400
         
@@ -78,18 +86,14 @@ def get_project(id):
     project = Project.query.get(id)
 
     if project:
-        # Convert the project data to a dictionary
         project_data = {
             'id': project.id,
             'name': project.name,
             'subtasks': [subtask.name for subtask in project.subtasks]
-            # Include any other relevant project details
         }
-        # Return the project data as JSON response
         print(project.name)
         return jsonify(project_data)
     else:
-        # If project with the specified ID is not found, return a 404 error
         return jsonify({'error': 'Project not found'}), 404
         
 @app.route('/users', methods=['GET'])
@@ -103,7 +107,6 @@ def register():
     data = request.get_json()
     username = data.get('username')
 
-    # Check if username or email already exists
     if User.query.filter_by(username=username).first() is not None:
         return jsonify({'message': 'Username already exists'}), 400
     

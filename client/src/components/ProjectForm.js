@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
-function ProjectForm({ addProject }) {
+function ProjectForm ({ addProject }) {
   const [name, setName] = useState('');
 
-  function handleSubmit(e) {
+  function handleSubmit(e){
     e.preventDefault();
     if (!name.trim()) return;
 
-    const newProject = { name, subtasks: [] };
-    addProject(newProject);
-    setName('');
-
+    // const newProject = { name, subtasks: [] };
+    // addProject(newProject);
+    // setName('');
+  
     fetch('http://localhost:5555/projects', {
       method: 'POST',
       headers: {
@@ -18,15 +18,20 @@ function ProjectForm({ addProject }) {
       },
       body: JSON.stringify({ name }),
     })
-      .then(response => {
-        if (!response.ok) {
+      .then((res) => {
+        if (!res.ok) {
           throw new Error('Failed to add project');
         }
+        return res.json();
       })
-      .catch(error => {
+      .then((data) => {
+        addProject(data);
+        setName('');
+      })
+      .catch((error) => {
         console.error('Error adding project:', error);
       });
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>
