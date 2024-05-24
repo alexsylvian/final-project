@@ -72,7 +72,7 @@ def projects():
         else:
             return jsonify({"error": "Name field is required"}), 400
         
-@app.route('/project/<int:id>', methods=['GET'])
+@app.route('/project/<id>', methods=['GET'])
 def get_project(id):
     print("Received project ID:", id)
     project = Project.query.get(id)
@@ -86,6 +86,7 @@ def get_project(id):
             # Include any other relevant project details
         }
         # Return the project data as JSON response
+        print(project.name)
         return jsonify(project_data)
     else:
         # If project with the specified ID is not found, return a 404 error

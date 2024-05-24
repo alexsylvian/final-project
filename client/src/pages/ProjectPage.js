@@ -28,6 +28,8 @@ function ProjectPage() {
             });
     }, [id]); // Dependency array ensures this effect runs when the ID changes
 
+    console.log(id)
+
     return (
         <>
             <NavBar />
