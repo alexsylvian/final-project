@@ -59,7 +59,8 @@ def projects():
             project_info = {
                 'id': project.id,
                 'name': project.name,
-                'subtasks': [subtask.name for subtask in project.subtasks]  # Retrieve subtask names
+                'subtasks': [subtask.name for subtask in project.subtasks],  # Retrieve subtask names
+                'created_at': project.created_at
             }
             project_data.append(project_info)
         return jsonify(project_data)
@@ -90,7 +91,7 @@ def get_project(id):
             'id': project.id,
             'name': project.name,
             'subtasks': [subtask.name for subtask in project.subtasks],
-            # 'created-at': project.created_at
+            'created-at': project.name
         }
         print(project.name)
         return jsonify(project_data)

@@ -10,23 +10,26 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
 
-def __repr__(self):
-    return f"Useer(id={self.id}, name={self.name})"
+    def __repr__(self):
+        return f"User(id={self.id}, username={self.username})"
 
 class Project(db.Model):
+    __tablename__ = 'projects'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
     subtasks = db.relationship('Subtask', backref='project', lazy=True)
 
     def __repr__(self):
         return f"Project(id={self.id}, name={self.name}, created_at={self.created_at})"
 
 class Subtask(db.Model):
+    __tablename__ = 'subtasks'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    # created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
 
     def __repr__(self):
-        return f"Subtask(id={self.id}, name={self.name}, project_id={self.project_id}, created_at={self.created_at})"
+        return f"Subtask(id={self.id}, name={self.name}, project_id={self.project_id})"
