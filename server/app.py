@@ -60,7 +60,8 @@ def projects():
                 'id': project.id,
                 'name': project.name,
                 'subtasks': [subtask.name for subtask in project.subtasks],  # Retrieve subtask names
-                'created_at': project.created_at
+                'created_at': project.created_at,
+                'due-date': project.due_date
             }
             project_data.append(project_info)
         return jsonify(project_data)
