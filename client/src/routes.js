@@ -17,7 +17,7 @@ const routes = [
     //   errorElement: <ErrorPage />
     },
     {
-      path: "/project/:id",
+      path: "/projects/:id",
       component: ProjectPage,
       exact: true
       // errorElement: <ErrorPage />

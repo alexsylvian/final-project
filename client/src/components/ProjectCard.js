@@ -22,7 +22,7 @@ function ProjectCard({ title, id, subtasks, createdAt }) {
           <button onClick={toggleSubtasks}>
             {showSubtasks ? "Hide Subtasks" : "Show Subtasks"}
           </button>
-          <Link to={`/project/${id}`}>View Project Info</Link>
+          <Link to={`/projects/${id}`}>View Project Info</Link>
         </article>
       );
     }

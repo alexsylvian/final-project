@@ -10,7 +10,7 @@ function ProjectPage() {
 
     useEffect(() => {
         setLoading(true)
-        fetch(`/project/${id}`)
+        fetch(`/projects/${id}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch project');
@@ -39,7 +39,7 @@ function ProjectPage() {
                 project_id: id
             };
     
-            fetch(`/project/${id}/subtasks`, {
+            fetch(`/projects/${id}/subtasks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ function ProjectPage() {
                 return response.json();
             })
             .then(() => {
-                fetch(`/project/${id}`)
+                fetch(`/projects/${id}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Failed to fetch project');

@@ -82,7 +82,7 @@ def projects():
         else:
             return jsonify({"error": "Name field is required"}), 400
         
-@app.route('/project/<id>', methods=['GET'])
+@app.route('/projects/<id>', methods=['GET'])
 def get_project(id):
     print("Received project ID:", id)
     project = Project.query.get(id)
@@ -99,7 +99,7 @@ def get_project(id):
     else:
         return jsonify({'error': 'Project not found'}), 404
     
-@app.route('/project/<id>/subtasks', methods=['GET', 'POST'])
+@app.route('/projects/<id>/subtasks', methods=['GET', 'POST'])
 def get_project_subtasks(id):
     if request.method == 'GET':
         print("Received project ID:", id)
