@@ -5,12 +5,12 @@ import { useParams } from "react-router-dom";
 function ProjectPage() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [newSubtask, setNewSubtask] = useState(""); // State for the new subtask input
+    const [newSubtask, setNewSubtask] = useState("");
     const { id } = useParams(); // Extracting the project ID from the URL
 
     useEffect(() => {
         setLoading(true)
-        fetch(`/project/${id}`) // Making a GET request to fetch project details by ID
+        fetch(`/project/${id}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch project');
@@ -18,31 +18,53 @@ function ProjectPage() {
                 return response.json();
             })
             .then(data => {
-                setProject(data); // Setting the fetched project details to state
+                setProject(data);
                 setLoading(false)
             })
             .catch(error => {
                 console.error('Error fetching project:', error);
                 setLoading(false)
             });
-    }, [id]); // Dependency array ensures this effect runs when the ID changes
+    }, [id]);
 
-    const handleNewSubtaskChange = (event) => {
-        setNewSubtask(event.target.value); // Update the state when input value changes
+    function handleNewSubtaskChange(e){
+        setNewSubtask(e.target.value);
     };
 
-    const handleAddSubtask = (event) => {
-        event.preventDefault(); // Prevent form submission
+    function handleAddSubtask(e){
+        e.preventDefault();
         if (newSubtask.trim() !== "") {
-            // Add the new subtask to the project
-            setProject(prevProject => ({
-                ...prevProject,
-                subtasks: [...prevProject.subtasks, newSubtask.trim()]
-            }));
-            // Reset the input field after adding the subtask
-            setNewSubtask("");
+            const newSubtaskData = {
+                name: newSubtask.trim(),
+                project_id: id
+            };
+
+            console.log(id)
+            console.log(newSubtaskData.project_id)
+    
+            fetch(`/project/${id}/subtasks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newSubtaskData),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add subtask');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming the server returns updated project data
+                setProject(data.project);
+                setNewSubtask("");
+            })
+            .catch(error => {
+                console.error('Error adding subtask:', error);
+            });
         }
-    };
+    }
 
     return (
         <>

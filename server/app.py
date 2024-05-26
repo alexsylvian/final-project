@@ -53,7 +53,7 @@ def index():
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
     if request.method == 'GET':
-        projects = get_projects()
+        projects = Project.query.all()
         project_data = []
         for project in projects:
             project_info = {
@@ -98,17 +98,35 @@ def get_project(id):
     else:
         return jsonify({'error': 'Project not found'}), 404
     
-@app.route('/project/<id>/subtasks', methods=['GET'])
+@app.route('/project/<id>/subtasks', methods=['GET', 'POST'])
 def get_project_subtasks(id):
-    print("Received project ID:", id)
-    project = Project.query.get(id)
+    if request.method == 'GET':
+        print("Received project ID:", id)
+        project = Project.query.get(id)
 
-    if project:
-        subtasks_data = [subtask.name for subtask in project.subtasks]
-        print("Subtasks:", subtasks_data)
-        return jsonify(subtasks_data)
-    else:
-        return jsonify({'error': 'Project not found'}), 404
+        if project:
+            subtasks_data = [subtask.name for subtask in project.subtasks]
+            print("Subtasks:", subtasks_data)
+            return jsonify(subtasks_data)
+        else:
+            return jsonify({'error': 'Project not found'}), 404
+    elif request.method == 'POST':
+        print('HI')
+        data = request.get_json()
+        name = data.get('name')
+        if name:
+            subtask = Subtask(name=name)
+            db.session.add(subtask)
+            db.session.commit()
+            subtask_data = {
+            'id': subtask.id,
+            'name': subtask.name,
+            'project_id': subtask.project_id
+        }
+            print(subtask_data)
+            return jsonify(subtask_data)
+        else:
+            return jsonify({"error": "Name field is required"}), 400 
         
 @app.route('/users', methods=['GET'])
 def get_users():
