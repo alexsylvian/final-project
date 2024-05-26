@@ -6,10 +6,11 @@
 from flask import request, jsonify, session, make_response
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
-from crud import add_project, get_projects, add_user
+from datetime import datetime
 
 # Local imports
 from config import app, db, api
+from crud import add_project, get_projects, add_user
 # Add your model imports
 from models import User, Project, Subtask
 
@@ -58,15 +59,19 @@ def projects():
     elif request.method == 'POST':
         data = request.get_json()
         name = data.get('name')
+        # created_at = data.get('created_at')
+        due_date = data.get('dueDate')
+        due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
         if name:
-            project = Project(name=name)
+            project = Project(name=name, due_date=due_date)
             db.session.add(project)
             db.session.commit()
             project_data = {
             'id': project.id,
             'name': project.name,
             'subtasks': [subtask.name for subtask in project.subtasks],
-            'created_at': project.created_at
+            'created_at': project.created_at,
+            'due_date': project.due_date
         }
             print(project.name)
             return jsonify(project_data)
