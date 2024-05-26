@@ -38,9 +38,6 @@ function ProjectPage() {
                 name: newSubtask.trim(),
                 project_id: id
             };
-
-            console.log(id)
-            console.log(newSubtaskData.project_id)
     
             fetch(`/project/${id}/subtasks`, {
                 method: 'POST',
@@ -56,8 +53,20 @@ function ProjectPage() {
                 return response.json();
             })
             .then(data => {
-                // Assuming the server returns updated project data
-                setProject(data.project);
+                // Fetch the updated project data
+                fetch(`/project/${id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch project');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        setProject(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching project:', error);
+                    });
                 setNewSubtask("");
             })
             .catch(error => {

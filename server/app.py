@@ -114,8 +114,10 @@ def get_project_subtasks(id):
         print('HI')
         data = request.get_json()
         name = data.get('name')
+        project_id = data.get('project_id')
+        print(data)
         if name:
-            subtask = Subtask(name=name)
+            subtask = Subtask(name=name, project_id = project_id)
             db.session.add(subtask)
             db.session.commit()
             subtask_data = {
