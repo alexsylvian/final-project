@@ -17,27 +17,33 @@ if __name__ == '__main__':
         print("Starting seed...")
         try:
             # Seed code goes here!
+            positions = ["Manager", "Developer", "Designer", "Tester", "Administrator"]
+            
             # Seed users
-            for _ in range(5):  # Seed 5 users
+            for _ in range(5):
                 user = User(
-                    username=fake.user_name(),  # Generate a random username
-                    created_at=fake.date_time_this_year()  # Generate a random creation date within the current year
+                    username=fake.user_name(),
+                    created_at=fake.date_time_this_year(),
+                    position=rc(positions)
                 )
                 db.session.add(user)
 
             # Seed projects and subtasks
-            for _ in range(10):  # Seed 10 projects
+            for _ in range(10):
                 project = Project(
-                    name=fake.sentence().upper(),  # Generate a random sentence and convert it to all caps
-                    created_at=fake.date_time_this_year(),  # Generate a random creation date within the current year
-                    due_date=datetime.utcnow() + timedelta(days=randint(1, 30))  # Generate a random due date within 30 days
+                    name=fake.sentence().upper(),
+                    created_at=fake.date_time_this_year(),
+                    due_date=fake.date_time_between(start_date='now', end_date='+30d'),
+                    user_id=randint(1, 5)  # Randomly assign a user_id
                 )
                 db.session.add(project)
-                for _ in range(3):  # Seed 3 subtasks for each project
+                for _ in range(3):
                     subtask = Subtask(
-                        name=fake.sentence(),  # Generate a random sentence for subtask name
+                        name=fake.sentence(),
+                        created_at=fake.date_time_this_year(),
+                        completion_status=fake.boolean(),  # Randomly assign a completion status
                         project=project,
-                        created_at=fake.date_time_this_year()  # Generate a random creation date within the current year
+                        creator_id=randint(1, 5)  # Randomly assign a creator_id
                     )
                     db.session.add(subtask)
 
@@ -46,4 +52,4 @@ if __name__ == '__main__':
             print("Seed complete!")
         except Exception as e:
             print("Error:", e)
-            db.session.rollback()  # Rollback changes if an error occurs
+            db.session.rollback()

@@ -61,7 +61,9 @@ def projects():
                 'name': project.name,
                 'subtasks': [subtask.name for subtask in project.subtasks],  # Retrieve subtask names
                 'created_at': project.created_at,
-                'due-date': project.due_date
+                'due-date': project.due_date,
+                'completion_status': project.completion_status,
+                'user_id': project.user_id
             }
             project_data.append(project_info)
         return jsonify(project_data)
@@ -93,7 +95,10 @@ def get_project(id):
             'id': project.id,
             'name': project.name,
             'subtasks': [subtask.name for subtask in project.subtasks],
-            'created_at': project.created_at
+            'created_at': project.created_at,
+            'due-date': project.due_date,
+            'completion_status': project.completion_status,
+            'user_id': project.user_id
         }
         print(project.name)
         return jsonify(project_data)
@@ -107,7 +112,17 @@ def get_project_subtasks(id):
         project = Project.query.get(id)
 
         if project:
-            subtasks_data = [subtask.name for subtask in project.subtasks]
+            subtasks_data = []
+            for subtask in project.subtasks:
+                subtask_info = {
+                    'id': subtask.id,
+                    'name': subtask.name,
+                    'created_at': subtask.created_at,
+                    'completion_status': subtask.completion_status,
+                    'project_id': subtask.project_id,
+                    'creator_id': subtask.creator_id
+                }
+                subtasks_data.append(subtask_info)
             print("Subtasks:", subtasks_data)
             return jsonify(subtasks_data)
         else:
@@ -135,7 +150,16 @@ def get_project_subtasks(id):
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
-    user_data = [{'id': user.id, 'username': user.username} for user in users]
+    user_data = []
+    for user in users:
+        user_info = {
+            'id': user.id,
+            'username': user.username,
+            'created_at': user.created_at.isoformat(),  # Format datetime as ISO string
+            'position': user.position,
+            # Add more fields as needed
+        }
+        user_data.append(user_info)
     return jsonify(user_data)
 
 @app.route('/register', methods=['POST'])
