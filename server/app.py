@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, jsonify, session
+from flask import request, jsonify, session, make_response
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
 from crud import add_project, get_projects, add_user
@@ -53,20 +53,8 @@ def index():
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
     if request.method == 'GET':
-        projects = Project.query.all()
-        project_data = []
-        for project in projects:
-            project_info = {
-                'id': project.id,
-                'name': project.name,
-                'subtasks': [subtask.name for subtask in project.subtasks],  # Retrieve subtask names
-                'created_at': project.created_at,
-                'due-date': project.due_date,
-                'completion_status': project.completion_status,
-                'user_id': project.user_id
-            }
-            project_data.append(project_info)
-        return jsonify(project_data)
+        print(([project.to_dict() for project in Project.query.all()]))
+        return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     elif request.method == 'POST':
         data = request.get_json()
         name = data.get('name')

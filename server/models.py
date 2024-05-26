@@ -40,6 +40,17 @@ class Project(db.Model):
     def __repr__(self):
         return f"Project(id={self.id}, name={self.name}, created_at={self.created_at}, due_date={self.due_date}, user_id={self.user_id}, completion_status={self.completion_status})"
     
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'subtasks': [subtask.name for subtask in self.subtasks],  # Retrieve subtask names
+            'created_at': self.created_at,
+            'due-date': self.due_date,
+            'completion_status': self.completion_status,
+            'user_id': self.user_id
+        }
+    
     def update_completion_status(self):
         """Update the completion status of the project based on subtasks completion."""
         self.completion_status = all(subtask.completion_status for subtask in self.subtasks)
@@ -59,3 +70,10 @@ class Subtask(db.Model):
 
     def __repr__(self):
         return f"Subtask(id={self.id}, name={self.name}, created_at={self.created_at}, completion_status={self.completion_status}, project_id={self.project_id}, creator_id={self.creator_id})"
+
+
+
+
+    # if request.method == 'GET':
+    #     print(([project.to_dict() for project in Project.query.all()]))
+    #     return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
