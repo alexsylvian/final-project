@@ -52,8 +52,7 @@ function ProjectPage() {
                 }
                 return response.json();
             })
-            .then(data => {
-                // Fetch the updated project data
+            .then(() => {
                 fetch(`/project/${id}`)
                     .then(response => {
                         if (!response.ok) {
