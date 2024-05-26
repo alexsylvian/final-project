@@ -87,7 +87,7 @@ function Home() {
         <h2>Projects</h2>
         <div className="project-cards">
           {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} />
+            <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} createdAt={project.created_at} />
           ))}
         </div>
         <ProjectForm addProject={handleAddProject} />

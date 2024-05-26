@@ -1,19 +1,19 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";;
 
-function ProjectCard({ title, id, subtasks }) {
+function ProjectCard({ title, id, subtasks, createdAt }) {
     const [showSubtasks, setShowSubtasks] = useState(false);
 
-    const toggleSubtasks = () => {
+    function toggleSubtasks(){
       setShowSubtasks(!showSubtasks);
     };
   
     return (
         <article className="project-card">
           <h2>{title}</h2>
+          <p>{createdAt}</p>
           {showSubtasks && (
             <ul>
-              {/* Render subtasks as list items */}
               {subtasks.map((subtask, index) => (
                 <li key={index}>{subtask}</li>
               ))}

@@ -84,6 +84,7 @@ function ProjectPage() {
                 ) : project ? (
                     <div>
                         <h2>{project.name}</h2>
+                        <p>Created {project.created_at}</p>
                         <ul>
                             {project.subtasks.map(subtask => (
                                 <li key={subtask}>{subtask}</li>

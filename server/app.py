@@ -74,7 +74,8 @@ def projects():
             project_data = {
             'id': project.id,
             'name': project.name,
-            'subtasks': [subtask.name for subtask in project.subtasks]
+            'subtasks': [subtask.name for subtask in project.subtasks],
+            'created_at': project.created_at
         }
             print(project.name)
             return jsonify(project_data)
@@ -91,7 +92,7 @@ def get_project(id):
             'id': project.id,
             'name': project.name,
             'subtasks': [subtask.name for subtask in project.subtasks],
-            'created-at': project.name
+            'created_at': project.created_at
         }
         print(project.name)
         return jsonify(project_data)
