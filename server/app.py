@@ -15,6 +15,11 @@ from crud import add_project, get_projects, add_user
 from models import User, Project, Subtask
 
 # Views go here!
+# @app.before_request
+# def check_if_logged_in():
+#     if not session['user_id']:
+#         return {'error': 'Unauthorized'}, 401
+
 class Login(Resource):
 
     def post(self):
@@ -24,6 +29,7 @@ class Login(Resource):
         print(user.username)
 
         session['user_id'] = user.id
+        print(session['user_id'])
         return user.to_dict()
     
 api.add_resource(Login, '/login')
@@ -32,6 +38,8 @@ class CheckSession(Resource):
 
     def get(self):
         user = User.query.filter(User.id == session.get('user_id')).first()
+        # print(session['user_id'])
+        # print("red")
         if user:
             return user.to_dict()
         else:
@@ -54,16 +62,35 @@ def index():
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
     if request.method == 'GET':
-        print(([project.to_dict() for project in Project.query.all()]))
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        print(f"GET: {user.id}")
+        print(f"GET: {user.username}")
+        print('love')
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     elif request.method == 'POST':
+        print("HEART")
+        user_id = session.get('user_id')
+        print(user_id)
+        print(user.username)
+        if user_id:
+            user = User.query.get(user_id)
+            print(f"POST: {user.username}")
+            print(f"POST: LOVE")
+        # print(f"POST: {user.username}")
         data = request.get_json()
         name = data.get('name')
         # created_at = data.get('created_at')
         due_date = data.get('dueDate')
         due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
+        # print(user)
+        # user_id = user.id
         if name:
-            project = Project(name=name, due_date=due_date)
+            project = Project(
+                name=name, 
+                due_date=due_date, 
+                # user_id=user_id
+            )
+            # print(project.user_id)
             db.session.add(project)
             db.session.commit()
             project_data = {
@@ -71,12 +98,15 @@ def projects():
             'name': project.name,
             'subtasks': [subtask.name for subtask in project.subtasks],
             'created_at': project.created_at,
-            'due_date': project.due_date
+            'due_date': project.due_date,
+            'user_id': project.user_id
         }
             print(project.name)
             return jsonify(project_data)
         else:
             return jsonify({"error": "Name field is required"}), 400
+    else:
+        return jsonify({"error": "User not authenticated"}), 401
         
 @app.route('/projects/<id>', methods=['GET'])
 def get_project(id):

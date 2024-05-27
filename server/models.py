@@ -24,6 +24,14 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"User(id={self.id}, username={self.username}, created_at={self.created_at}, position={self.position})"
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'created_at': self.created_at.isoformat(),  # Convert to ISO format for JSON serialization
+            'position': self.position
+        }
 
 
 class Project(db.Model):
@@ -70,10 +78,3 @@ class Subtask(db.Model):
 
     def __repr__(self):
         return f"Subtask(id={self.id}, name={self.name}, created_at={self.created_at}, completion_status={self.completion_status}, project_id={self.project_id}, creator_id={self.creator_id})"
-
-
-
-
-    # if request.method == 'GET':
-    #     print(([project.to_dict() for project in Project.query.all()]))
-    #     return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
