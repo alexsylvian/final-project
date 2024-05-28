@@ -6,18 +6,17 @@ const ProjectForm = ({ addProject, userId }) => {
   const formSchema = yup.object().shape({
     name: yup.string().required("Project name is required"),
     dueDate: yup.date().required("Due date is required"),
+    userId: yup.number().required("Number is required")
   });
 
   const formik = useFormik({
     initialValues: {
       name: "",
       dueDate: "",
+      userId: ""
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
-      // Include the user ID in the values
-      values.userId = userId;
-
       fetch("http://localhost:5555/projects", {
         method: "POST",
         headers: {
@@ -66,6 +65,16 @@ const ProjectForm = ({ addProject, userId }) => {
         />
         <p style={{ color: "red" }}> {formik.errors.dueDate}</p>
 
+        <label htmlFor="userId">User Id - Standby</label>
+        <br />
+        <input
+          id="userId"
+          name="userId"
+          type="number"
+          onChange={formik.handleChange}
+          value={formik.values.userId}
+        />
+        <p style={{ color: "red" }}>{formik.errors.userId}</p>
         <button type="submit">Add Project</button>
       </form>
     </div>

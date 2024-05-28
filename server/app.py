@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Standard library imports
+import logging
 
 # Remote library imports
 from flask import request, jsonify, session, make_response
@@ -28,21 +29,28 @@ class Login(Resource):
         ).first()
         print(user.username)
 
+        app.logger.debug(f"Session before setting user ID: {session}")
         session['user_id'] = user.id
+        app.logger.debug(f"Session after setting user ID: {session}")
         print(session['user_id'])
         return user.to_dict()
     
 api.add_resource(Login, '/login')
 
+logging.basicConfig(level=logging.DEBUG)  # Set the logging level to DEBUG
+
 class CheckSession(Resource):
 
     def get(self):
-        user = User.query.filter(User.id == session.get('user_id')).first()
-        # print(session['user_id'])
-        # print("red")
+        user_id = session.get('user_id')
+        logging.debug(f"Session user_id: {user_id}")
+
+        user = User.query.filter(User.id == user_id).first()
         if user:
+            logging.debug(f"User found: {user.to_dict()}")
             return user.to_dict()
         else:
+            logging.warning("User not found or session expired")
             return {'message': '401: Not Authorized'}, 401
 
 api.add_resource(CheckSession, '/check_session')
@@ -63,34 +71,27 @@ def index():
 def projects():
     if request.method == 'GET':
         user = User.query.filter(User.id == session.get('user_id')).first()
-        print(f"GET: {user.id}")
-        print(f"GET: {user.username}")
-        print('love')
+        # print(f"GET: {user.id}")
+        # print(f"GET: {user.username}")
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     elif request.method == 'POST':
-        print("HEART")
-        user_id = session.get('user_id')
-        print(user_id)
-        print(user.username)
-        if user_id:
-            user = User.query.get(user_id)
-            print(f"POST: {user.username}")
-            print(f"POST: LOVE")
+        print("POST: Pre-User")
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        print("POST: Post-User")
+        # print(f"POST: {user.id}")
         # print(f"POST: {user.username}")
         data = request.get_json()
         name = data.get('name')
-        # created_at = data.get('created_at')
         due_date = data.get('dueDate')
         due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
-        # print(user)
-        # user_id = user.id
+        user_id = data.get('userId')
+        print(user_id)
         if name:
             project = Project(
                 name=name, 
                 due_date=due_date, 
-                # user_id=user_id
+                user_id=user_id
             )
-            # print(project.user_id)
             db.session.add(project)
             db.session.commit()
             project_data = {
@@ -105,8 +106,6 @@ def projects():
             return jsonify(project_data)
         else:
             return jsonify({"error": "Name field is required"}), 400
-    else:
-        return jsonify({"error": "User not authenticated"}), 401
         
 @app.route('/projects/<id>', methods=['GET'])
 def get_project(id):
@@ -155,15 +154,17 @@ def get_project_subtasks(id):
         data = request.get_json()
         name = data.get('name')
         project_id = data.get('project_id')
+        creator_id = data.get('creator_id')
         print(data)
         if name:
-            subtask = Subtask(name=name, project_id = project_id)
+            subtask = Subtask(name=name, project_id = project_id, creator_id = creator_id)
             db.session.add(subtask)
             db.session.commit()
             subtask_data = {
             'id': subtask.id,
             'name': subtask.name,
-            'project_id': subtask.project_id
+            'project_id': subtask.project_id,
+            'creator_id': subtask.creator_id
         }
             print(subtask_data)
             return jsonify(subtask_data)

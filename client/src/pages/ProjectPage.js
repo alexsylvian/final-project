@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import { useParams } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 function ProjectPage() {
-    const [project, setProject] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [newSubtask, setNewSubtask] = useState("");
     const { id } = useParams(); // Extracting the project ID from the URL
 
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const formSchema = yup.object().shape({
+        newSubtask: yup.string().required("Subtask name is required"),
+        creatorId: yup.number().required("Creator ID is required")
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            newSubtask: "",
+            creatorId: ""
+        },
+        validationSchema: formSchema,
+        onSubmit: handleAddSubtask,
+    });
+
     useEffect(() => {
-        setLoading(true)
+        setLoading(true);
         fetch(`/projects/${id}`)
             .then(response => {
                 if (!response.ok) {
@@ -19,26 +35,26 @@ function ProjectPage() {
             })
             .then(data => {
                 setProject(data);
-                setLoading(false)
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching project:', error);
-                setLoading(false)
+                setLoading(false);
             });
     }, [id]);
 
-    function handleNewSubtaskChange(e){
-        setNewSubtask(e.target.value);
-    };
+    function handleNewSubtaskChange(e) {
+        formik.setFieldValue("newSubtask", e.target.value);
+    }
 
-    function handleAddSubtask(e){
-        e.preventDefault();
-        if (newSubtask.trim() !== "") {
+    function handleAddSubtask(values) {
+        if (values.newSubtask.trim() !== "") {
             const newSubtaskData = {
-                name: newSubtask.trim(),
-                project_id: id
+                name: values.newSubtask.trim(),
+                project_id: id,
+                creator_id: values.creatorId // Corrected naming convention
             };
-    
+
             fetch(`/projects/${id}/subtasks`, {
                 method: 'POST',
                 headers: {
@@ -66,7 +82,7 @@ function ProjectPage() {
                     .catch(error => {
                         console.error('Error fetching project:', error);
                     });
-                setNewSubtask("");
+                formik.resetForm();
             })
             .catch(error => {
                 console.error('Error adding subtask:', error);
@@ -90,14 +106,28 @@ function ProjectPage() {
                                 <li key={subtask}>{subtask}</li>
                             ))}
                         </ul>
-                        {/* Form for adding new subtasks */}
-                        <form onSubmit={handleAddSubtask}>
+                        <form onSubmit={formik.handleSubmit}>
                             <input
                                 type="text"
-                                value={newSubtask}
+                                id="newSubtask"
+                                name="newSubtask"
+                                value={formik.values.newSubtask}
                                 onChange={handleNewSubtaskChange}
                                 placeholder="Enter new subtask"
                             />
+                            {formik.errors.newSubtask && formik.touched.newSubtask && (
+                                <p style={{ color: "red" }}>{formik.errors.newSubtask}</p>
+                            )}
+                            <label htmlFor="creatorId">Creator ID</label>
+                            <br />
+                            <input
+                                id="creatorId"
+                                name="creatorId"
+                                type="number"
+                                onChange={formik.handleChange}
+                                value={formik.values.creatorId}
+                            />
+                            <p style={{ color: "red" }}>{formik.errors.creatorId}</p>
                             <button type="submit">Add Subtask</button>
                         </form>
                     </div>

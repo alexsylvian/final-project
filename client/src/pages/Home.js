@@ -9,23 +9,8 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
+  const [userIdForProjects, setUserIdForProjects] = useState('')
   const [users, setUsers] = useState([])
-
-
-  function handleLogin(user) {
-    setUser(user);
-  }
-
-  function handleLogout() {
-    setUser(null)
-  }
-
-  function handleRegister(user) {
-    console.log("User registered:", user);
-    setUser(user);
-    setUsers([...users, user]);
-    console.log("Updated user state:", user);
-  }
 
   useEffect(() => {
     fetch('/projects')
@@ -42,12 +27,32 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    fetch("/check_session").then((response) => {
-      if (response.ok) {
-        response.json().then((user) => setUser(user));
+    fetch("/check_session").then((res) => {
+      if (res.ok) {
+        // console.log(user.username)
+        res.json().then((user) => setUser(user));
+        // console.log(user.username)
       }
     });
   }, []);
+
+  function handleLogin(user) {
+    setUser(user);
+    console.log(user.username);
+    console.log(user.id);
+    setUserIdForProjects(user.id)
+  }
+
+  function handleLogout() {
+    setUser(null)
+  }
+
+  function handleRegister(user) {
+    console.log("User registered:", user);
+    setUser(user);
+    setUsers([...users, user]);
+    console.log("Updated user state:", user);
+  }
 
   function handleAddProject(newProject) {
     setProjects([...projects, newProject]);
