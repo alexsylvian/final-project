@@ -73,7 +73,7 @@ function Home() {
       {!user ? (
         <h1>Please Login</h1>
       ) : (
-        <h1>Welcome to Your Task Manager, {user.username}!</h1>
+        <h1>Welcome to Your Task Manager, {user.username} ({user.position})!</h1>
       )}
       {!user ? (
         <>

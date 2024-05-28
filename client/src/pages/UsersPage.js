@@ -28,6 +28,7 @@ function UsersPage(){
                             <tr key={user.id}>
                                 <td>{user.id}</td>
                                 <td>{user.username}</td>
+                                <td>{user.position}</td>
                             </tr>
                         ))}
                     </tbody>

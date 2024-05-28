@@ -190,11 +190,12 @@ def get_users():
 def register():
     data = request.get_json()
     username = data.get('username')
+    position = data.get('position')
 
     if User.query.filter_by(username=username).first() is not None:
         return jsonify({'message': 'Username already exists'}), 400
     
-    user = User(username = username)
+    user = User(username=username, position=position)
     db.session.add(user)
     db.session.commit()
     session['user_id'] = user.id
