@@ -45,7 +45,6 @@ class CheckSession(Resource):
         user_id = session.get('user_id')
         logging.debug(f"Session user_id: {user_id}")
         
-
         user = User.query.filter(User.id == user_id).first()
         if user:
             logging.debug(f"User found: {user.to_dict()}")
@@ -70,9 +69,9 @@ def index():
 
 class Projects(Resource):
     def get(self):
-        user = User.query.filter(User.id == session.get('user_id')).first()
-        print(f"GET: {user.id}")
-        print(f"GET: {user.username}")
+        # user = User.query.filter(User.id == session.get('user_id')).first()
+        # print(f"GET: {user.id}")
+        # print(f"GET: {user.username}")
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     
     def post(self):

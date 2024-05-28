@@ -2,21 +2,23 @@ import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-const ProjectForm = ({ addProject, userId }) => {
+const ProjectForm = ({ addProject, userIdForProjects }) => {
   const formSchema = yup.object().shape({
     name: yup.string().required("Project name is required"),
     dueDate: yup.date().required("Due date is required"),
-    userId: yup.number().required("Number is required")
+    // userId: yup.number().required("Number is required")
   });
 
   const formik = useFormik({
     initialValues: {
       name: "",
       dueDate: "",
-      userId: ""
+      userId: userIdForProjects
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
+      console.log("Form Values:", values);
+      
       fetch("http://localhost:5555/projects", {
         method: "POST",
         headers: {
@@ -65,7 +67,7 @@ const ProjectForm = ({ addProject, userId }) => {
         />
         <p style={{ color: "red" }}> {formik.errors.dueDate}</p>
 
-        <label htmlFor="userId">User Id - Standby</label>
+        {/* <label htmlFor="userId">User Id - Standby</label>
         <br />
         <input
           id="userId"
@@ -74,7 +76,7 @@ const ProjectForm = ({ addProject, userId }) => {
           onChange={formik.handleChange}
           value={formik.values.userId}
         />
-        <p style={{ color: "red" }}>{formik.errors.userId}</p>
+        <p style={{ color: "red" }}>{formik.errors.userId}</p> */}
         <button type="submit">Add Project</button>
       </form>
     </div>

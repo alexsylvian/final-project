@@ -46,6 +46,8 @@ function Home() {
         res.json().then((user) => {
           setUser(user)
           console.log(user.username)
+          setUserIdForProjects(user.id)
+          console.log(user.id)
         })
       }
     });
@@ -75,6 +77,7 @@ function Home() {
 
   function handleSearch(e) {
     setSearchedProjects(e.target.value);
+    console.log(userIdForProjects)
   }
 
   const filteredProjects = projects.filter(project =>
@@ -110,7 +113,7 @@ function Home() {
             <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} createdAt={project.created_at} />
           ))}
         </div>
-        <ProjectForm addProject={handleAddProject} />
+        <ProjectForm addProject={handleAddProject} userIdForProjects={userIdForProjects} />
       </div> )}
     </div>
   );
