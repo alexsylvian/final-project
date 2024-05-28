@@ -18,8 +18,14 @@ from models import User, Project, Subtask
 # Views go here!
 # @app.before_request
 # def check_if_logged_in():
-#     if not session['user_id']:
-#         return {'error': 'Unauthorized'}, 401
+#     open_access_list = [
+#         'signup',
+#         'login',
+#         'check_session'
+#     ]
+
+#     if (request.endpoint) not in open_access_list and (not session.get('user_id')):
+#         return {'error': '401 Unauthorized'}, 401
 
 class Login(Resource):
 
@@ -75,11 +81,11 @@ class Projects(Resource):
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     
     def post(self):
-        print("POST: Pre-User")
-        user_id = session.get('user_id')
-        print("POST: Post-User")
-        print(f"POST: {user_id}")
-        print(f"POST: {user_id}")
+        # print("POST: Pre-User")
+        # user = User.query.filter(User.id == session.get('user_id')).first()
+        # print("POST: Post-User")
+        # print(f"POST: {user.id}")
+        # print(f"POST: {user.id}")
         data = request.get_json()
         name = data.get('name')
         due_date = data.get('dueDate')

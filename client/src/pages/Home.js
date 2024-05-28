@@ -9,7 +9,6 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
-  const [userIdForProjects, setUserIdForProjects] = useState('')
   const [users, setUsers] = useState([])
 
   useEffect(() => {
@@ -46,7 +45,6 @@ function Home() {
         res.json().then((user) => {
           setUser(user)
           console.log(user.username)
-          setUserIdForProjects(user.id)
           console.log(user.id)
         })
       }
@@ -57,7 +55,6 @@ function Home() {
     setUser(user);
     console.log(user.username);
     console.log(user.id);
-    setUserIdForProjects(user.id)
   }
 
   function handleLogout() {
@@ -77,7 +74,6 @@ function Home() {
 
   function handleSearch(e) {
     setSearchedProjects(e.target.value);
-    console.log(userIdForProjects)
   }
 
   const filteredProjects = projects.filter(project =>
@@ -113,7 +109,7 @@ function Home() {
             <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} createdAt={project.created_at} />
           ))}
         </div>
-        <ProjectForm addProject={handleAddProject} userIdForProjects={userIdForProjects} />
+        <ProjectForm addProject={handleAddProject} userIdForProjects={user.id} />
       </div> )}
     </div>
   );
