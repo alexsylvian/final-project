@@ -17,6 +17,20 @@ function Home() {
       .then(response => response.json())
       .then(data => setProjects(data))
       .catch(error => console.error('Error fetching projects:', error));
+
+    // fetch('/users')
+    //   .then(response => response.json())
+    //   .then(data => setUsers(data))
+    //   .catch(error => console.error('Error fetching projects:', error));
+    
+    // fetch("/check_session").then((res) => {
+    //     if (res.ok) {
+    //       res.json().then((user) => {
+    //         setUser(user)
+    //         console.log(user.username)
+    //       })
+    //     }
+    //   });
   }, []);
 
   useEffect(() => {
@@ -29,9 +43,10 @@ function Home() {
   useEffect(() => {
     fetch("/check_session").then((res) => {
       if (res.ok) {
-        // console.log(user.username)
-        res.json().then((user) => setUser(user));
-        // console.log(user.username)
+        res.json().then((user) => {
+          setUser(user)
+          console.log(user.username)
+        })
       }
     });
   }, []);

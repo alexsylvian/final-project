@@ -44,6 +44,7 @@ class CheckSession(Resource):
     def get(self):
         user_id = session.get('user_id')
         logging.debug(f"Session user_id: {user_id}")
+        
 
         user = User.query.filter(User.id == user_id).first()
         if user:
@@ -67,19 +68,19 @@ api.add_resource(Logout, '/logout')
 def index():
     return '<h1>Project Server</h1>'
 
-@app.route('/projects', methods=['GET', 'POST'])
-def projects():
-    if request.method == 'GET':
+class Projects(Resource):
+    def get(self):
         user = User.query.filter(User.id == session.get('user_id')).first()
-        # print(f"GET: {user.id}")
-        # print(f"GET: {user.username}")
+        print(f"GET: {user.id}")
+        print(f"GET: {user.username}")
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
-    elif request.method == 'POST':
+    
+    def post(self):
         print("POST: Pre-User")
-        user = User.query.filter(User.id == session.get('user_id')).first()
+        user_id = session.get('user_id')
         print("POST: Post-User")
-        # print(f"POST: {user.id}")
-        # print(f"POST: {user.username}")
+        print(f"POST: {user_id}")
+        print(f"POST: {user_id}")
         data = request.get_json()
         name = data.get('name')
         due_date = data.get('dueDate')
@@ -106,6 +107,48 @@ def projects():
             return jsonify(project_data)
         else:
             return jsonify({"error": "Name field is required"}), 400
+        
+api.add_resource(Projects, '/projects')
+
+# @app.route('/projects', methods=['GET', 'POST'])
+# def projects():
+#     if request.method == 'GET':
+#         user = User.query.filter(User.id == session.get('user_id')).first()
+#         print(f"GET: {user.id}")
+#         print(f"GET: {user.username}")
+#         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
+#     elif request.method == 'POST':
+#         print("POST: Pre-User")
+#         user = User.query.filter(User.id == session.get('user_id')).first()
+#         print("POST: Post-User")
+#         print(f"POST: {user.id}")
+#         print(f"POST: {user.username}")
+#         data = request.get_json()
+#         name = data.get('name')
+#         due_date = data.get('dueDate')
+#         due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
+#         user_id = data.get('userId')
+#         print(user_id)
+#         if name:
+#             project = Project(
+#                 name=name, 
+#                 due_date=due_date, 
+#                 user_id=user_id
+#             )
+#             db.session.add(project)
+#             db.session.commit()
+#             project_data = {
+#             'id': project.id,
+#             'name': project.name,
+#             'subtasks': [subtask.name for subtask in project.subtasks],
+#             'created_at': project.created_at,
+#             'due_date': project.due_date,
+#             'user_id': project.user_id
+#         }
+#             print(project.name)
+#             return jsonify(project_data)
+#         else:
+#             return jsonify({"error": "Name field is required"}), 400
         
 @app.route('/projects/<id>', methods=['GET'])
 def get_project(id):

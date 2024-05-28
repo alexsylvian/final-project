@@ -103,7 +103,10 @@ function ProjectPage() {
                         <p>Created {project.created_at}</p>
                         <ul>
                             {project.subtasks.map(subtask => (
-                                <li key={subtask}>{subtask}</li>
+                                <>
+                                 <li key={subtask}>{subtask}</li>
+                                 <button>+</button>
+                                </>
                             ))}
                         </ul>
                         <form onSubmit={formik.handleSubmit}>
