@@ -5,15 +5,15 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 function ProjectPage() {
-    const { id } = useParams(); // Extracting the project ID from the URL
+    const { id } = useParams();
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string().required("Subtask name is required"),
-        // creatorId: yup.number().required("Creator ID is required")
     });
 
     const formik = useFormik({
@@ -45,17 +45,15 @@ function ProjectPage() {
     }, [id]);
 
     function handleNewSubtaskChange(e) {
-        console.log(user.id)
         formik.setFieldValue("newSubtask", e.target.value);
     }
 
     function handleAddSubtask(values) {
         if (values.newSubtask.trim() !== "") {
-            console.log(values)
             const newSubtaskData = {
                 name: values.newSubtask.trim(),
                 project_id: id,
-                creator_id: values.creatorId // Corrected naming convention
+                creator_id: values.creatorId
             };
 
             fetch(`/projects/${id}/subtasks`, {
@@ -98,12 +96,21 @@ function ProjectPage() {
             if (res.ok) {
                 res.json().then((user) => {
                     setUser(user)
-                    console.log(user.username)
                     formik.setFieldValue("creatorId", user.id);
                 });
             }
         });
     }, []);
+
+    function openModal() {
+        setModalOpen(true);
+        console.log('open')
+    }
+    
+    function closeModal() {
+        setModalOpen(false);
+        console.log('close')
+    }
 
     return (
         <>
@@ -113,14 +120,15 @@ function ProjectPage() {
                 {loading ? (
                     <p>Loading...</p>
                 ) : project ? (
+                    <>
                     <div>
                         <h2>{project.name}</h2>
                         <p>Created {project.created_at}</p>
                         <ul>
                             {project.subtasks.map(subtask => (
                                 <>
-                                 <li key={subtask}>{subtask}</li>
-                                 <button>+</button>
+                                <li key={subtask.id}>{subtask}</li>
+                                <button onClick={modalOpen ? closeModal : openModal}>{modalOpen ? "-" : "+"}</button>
                                 </>
                             ))}
                         </ul>
@@ -136,19 +144,17 @@ function ProjectPage() {
                             {formik.errors.newSubtask && formik.touched.newSubtask && (
                                 <p style={{ color: "red" }}>{formik.errors.newSubtask}</p>
                             )}
-                            {/* <label htmlFor="creatorId">Creator ID</label>
-                            <br />
-                            <input
-                                id="creatorId"
-                                name="creatorId"
-                                type="number"
-                                onChange={formik.handleChange}
-                                value={formik.values.creatorId}
-                            />
-                            <p style={{ color: "red" }}>{formik.errors.creatorId}</p> */}
                             <button type="submit">Add Subtask</button>
                         </form>
                     </div>
+
+                    <div className={modalOpen ? "modal-open" : "modal"}>
+                        <div className="modal-content">
+                            <span className="close" onClick={closeModal}>&times;</span>
+                            <p>This is the content of the modal.</p>
+                        </div>
+                    </div>
+                    </>
                 ) : (
                     <p>Project not found</p>
                 )}
