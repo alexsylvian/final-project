@@ -139,7 +139,6 @@ class Subtasks(Resource):
             subtasks_data = []
             for subtask in project.subtasks:
                 subtasks_data.append(subtask.to_dict())
-            print("Subtasks:", subtasks_data)
             return jsonify(subtasks_data)
         else:
             return jsonify({'error': 'Project not found'}), 404
@@ -166,6 +165,24 @@ class Subtasks(Resource):
             return jsonify({"error": "Name field is required"}), 400 
         
 api.add_resource(Subtasks, '/projects/<id>/subtasks')
+
+class SubtaskId(Resource):
+    def get(self, project_id, subtask_id):
+        project = Project.query.get(project_id)
+
+        if project:
+            subtask = Subtask.query.get(subtask_id)
+
+            if subtask:
+                subtask_data = subtask.to_dict()
+                subtask_data['created_at'] = subtask.created_at.strftime('%Y-%m-%dT%H:%M:%S')
+                return subtask_data, 200
+            else:
+                return {"message": "Subtask not found"}, 404
+        else:
+            return {"message": "Project not found"}, 404
+
+api.add_resource(SubtaskId, '/projects/<int:project_id>/subtasks/<int:subtask_id>')
 
 class Users(Resource):
     def get(self):

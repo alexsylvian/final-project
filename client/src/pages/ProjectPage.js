@@ -11,6 +11,7 @@ function ProjectPage() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState("");
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string().required("Subtask name is required"),
@@ -149,9 +150,9 @@ function ProjectPage() {
                     </div>
 
                     <div className={modalOpen ? "modal-open" : "modal"}>
-                        <div className="modal-content">
+                    <div className="modal-content">
                             <span className="close" onClick={closeModal}>&times;</span>
-                            <p>This is the content of the modal.</p>
+                            <p>{modalContent}</p> {/* Use modalContent state */}
                         </div>
                     </div>
                     </>
