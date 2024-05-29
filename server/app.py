@@ -150,7 +150,6 @@ class Subtasks(Resource):
         name = data.get('name')
         project_id = data.get('project_id')
         creator_id = data.get('creator_id')
-        print(data)
         if name:
             subtask = Subtask(name=name, project_id = project_id, creator_id = creator_id)
             db.session.add(subtask)

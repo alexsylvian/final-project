@@ -9,16 +9,17 @@ function ProjectPage() {
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string().required("Subtask name is required"),
-        creatorId: yup.number().required("Creator ID is required")
+        // creatorId: yup.number().required("Creator ID is required")
     });
 
     const formik = useFormik({
         initialValues: {
             newSubtask: "",
-            creatorId: ""
+            creatorId: 0
         },
         validationSchema: formSchema,
         onSubmit: handleAddSubtask,
@@ -44,11 +45,13 @@ function ProjectPage() {
     }, [id]);
 
     function handleNewSubtaskChange(e) {
+        console.log(user.id)
         formik.setFieldValue("newSubtask", e.target.value);
     }
 
     function handleAddSubtask(values) {
         if (values.newSubtask.trim() !== "") {
+            console.log(values)
             const newSubtaskData = {
                 name: values.newSubtask.trim(),
                 project_id: id,
@@ -90,6 +93,18 @@ function ProjectPage() {
         }
     }
 
+    useEffect(() => {
+        fetch("/check_session").then((res) => {
+            if (res.ok) {
+                res.json().then((user) => {
+                    setUser(user)
+                    console.log(user.username)
+                    formik.setFieldValue("creatorId", user.id);
+                });
+            }
+        });
+    }, []);
+
     return (
         <>
             <NavBar />
@@ -121,7 +136,7 @@ function ProjectPage() {
                             {formik.errors.newSubtask && formik.touched.newSubtask && (
                                 <p style={{ color: "red" }}>{formik.errors.newSubtask}</p>
                             )}
-                            <label htmlFor="creatorId">Creator ID</label>
+                            {/* <label htmlFor="creatorId">Creator ID</label>
                             <br />
                             <input
                                 id="creatorId"
@@ -130,7 +145,7 @@ function ProjectPage() {
                                 onChange={formik.handleChange}
                                 value={formik.values.creatorId}
                             />
-                            <p style={{ color: "red" }}>{formik.errors.creatorId}</p>
+                            <p style={{ color: "red" }}>{formik.errors.creatorId}</p> */}
                             <button type="submit">Add Subtask</button>
                         </form>
                     </div>
