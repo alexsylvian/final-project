@@ -129,30 +129,22 @@ class ProjectID(Resource):
             return jsonify({'error': 'Project not found'}), 404
         
 api.add_resource(ProjectID, '/projects/<id>')
-    
-@app.route('/projects/<id>/subtasks', methods=['GET', 'POST'])
-def get_project_subtasks(id):
-    if request.method == 'GET':
+
+class Subtasks(Resource):
+    def get(self, id):
         print("Received project ID:", id)
         project = Project.query.get(id)
 
         if project:
             subtasks_data = []
             for subtask in project.subtasks:
-                subtask_info = {
-                    'id': subtask.id,
-                    'name': subtask.name,
-                    'created_at': subtask.created_at,
-                    'completion_status': subtask.completion_status,
-                    'project_id': subtask.project_id,
-                    'creator_id': subtask.creator_id
-                }
-                subtasks_data.append(subtask_info)
+                subtasks_data.append(subtask.to_dict())
             print("Subtasks:", subtasks_data)
             return jsonify(subtasks_data)
         else:
             return jsonify({'error': 'Project not found'}), 404
-    elif request.method == 'POST':
+        
+    def post(self, id):
         print('HI')
         data = request.get_json()
         name = data.get('name')
@@ -174,20 +166,32 @@ def get_project_subtasks(id):
         else:
             return jsonify({"error": "Name field is required"}), 400 
         
-@app.route('/users', methods=['GET'])
-def get_users():
-    users = User.query.all()
-    user_data = []
-    for user in users:
-        user_info = {
-            'id': user.id,
-            'username': user.username,
-            'created_at': user.created_at.isoformat(),  # Format datetime as ISO string
-            'position': user.position,
-            # Add more fields as needed
-        }
-        user_data.append(user_info)
-    return jsonify(user_data)
+api.add_resource(Subtasks, '/projects/<id>/subtasks')
+
+class Users(Resource):
+    def get(self):
+        return make_response(jsonify([user.to_dict() for user in User.query.all()]))
+    
+api.add_resource(Users, '/users')
+
+# class Register(Resource):
+#     def post(self):
+#         data = request.get_json()
+#         username = data.get('username')
+#         position = data.get('position')
+
+#         if User.query.filter_by(username=username).first() is not None:
+#             return jsonify({'message': 'Username already exists'}), 400
+    
+#         user = User(username=username, position=position)
+#         print(user)
+#         db.session.add(user)
+#         db.session.commit()
+#         session['user_id'] = user.id
+
+#         return jsonify(user.to_dict()), 201
+    
+# api.add_resource(Register, '/register')
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -199,12 +203,12 @@ def register():
         return jsonify({'message': 'Username already exists'}), 400
     
     user = User(username=username, position=position)
+    print(user)
     db.session.add(user)
     db.session.commit()
     session['user_id'] = user.id
 
     return jsonify(user.to_dict()), 201
-
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
