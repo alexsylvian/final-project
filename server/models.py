@@ -52,7 +52,7 @@ class Project(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'subtasks': [subtask.name for subtask in self.subtasks],  # Retrieve subtask names
+            'subtasks': [subtask.to_dict() for subtask in self.subtasks],  # Retrieve subtask names
             'created_at': self.created_at,
             'due-date': self.due_date,
             'completion_status': self.completion_status,

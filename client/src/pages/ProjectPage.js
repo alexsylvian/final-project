@@ -12,6 +12,7 @@ function ProjectPage() {
     const [user, setUser] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState("");
+    const [currentSubtask, setCurrentSubtask] = useState("")
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string().required("Subtask name is required"),
@@ -103,9 +104,11 @@ function ProjectPage() {
         });
     }, []);
 
-    function openModal() {
+    function openModal(subtask) {
         setModalOpen(true);
         console.log('open')
+        setCurrentSubtask(subtask)
+        console.log(subtask)
     }
     
     function closeModal() {
@@ -127,10 +130,19 @@ function ProjectPage() {
                         <p>Created {project.created_at}</p>
                         <ul>
                             {project.subtasks.map(subtask => (
-                                <>
-                                <li key={subtask.id}>{subtask}</li>
-                                <button onClick={modalOpen ? closeModal : openModal}>{modalOpen ? "-" : "+"}</button>
-                                </>
+                                <React.Fragment key={subtask.id}>
+                                    <li>
+                                        <input
+                                            type="checkbox"
+                                            checked={subtask.completion_status}
+                                            // onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
+                                        />
+                                        <span>{subtask.name}</span>
+                                    </li>
+                                    <button onClick={() => openModal(subtask)}>
+                                        {modalOpen ? "-" : "+"}
+                                    </button>
+                                </React.Fragment>
                             ))}
                         </ul>
                         <form onSubmit={formik.handleSubmit}>
@@ -152,7 +164,16 @@ function ProjectPage() {
                     <div className={modalOpen ? "modal-open" : "modal"}>
                     <div className="modal-content">
                             <span className="close" onClick={closeModal}>&times;</span>
-                            <p>{modalContent}</p> {/* Use modalContent state */}
+                            <p>
+                                Hello, this is the
+                                <br></br> 
+                                {currentSubtask.name}
+                                <br></br> subtask. 
+                                <li>Edit</li>
+                                <li>Add User</li>
+                                <li>Mark Complete / Incomplete</li>
+                                <li>Delete</li>
+                            </p>
                         </div>
                     </div>
                     </>
