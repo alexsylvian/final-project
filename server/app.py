@@ -8,8 +8,6 @@ from flask import request, jsonify, session, make_response
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-# from flask_bcrypt import Bcrypt, generate_password_hash, bcrypt
-# from flask.ext.bcrypt import Bcrypt
 
 # Local imports
 from config import app, db, api, bcrypt
@@ -271,6 +269,7 @@ def register():
     # Create a new user with hashed password
     user = User(username=username, position=position)
     user.password_hash = password
+    
 
     # Add the user to the database
     db.session.add(user)

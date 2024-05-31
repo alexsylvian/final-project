@@ -52,9 +52,11 @@ function Home() {
   }, []);
 
   function handleLogin(user) {
-    setUser(user);
-    console.log(user.username);
-    console.log(user.id);
+    if(user.username){
+      setUser(user);
+      console.log(user.username);
+      console.log(user.id);
+    }
   }
 
   function handleLogout() {

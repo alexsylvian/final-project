@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 function Login({ onLogin }) {
     const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("")
   
     function handleSubmit(e) {
       e.preventDefault();
@@ -10,7 +11,7 @@ function Login({ onLogin }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({ username, password }),
       })
         .then((r) => r.json())
         .then((user) => onLogin(user));
@@ -21,7 +22,14 @@ function Login({ onLogin }) {
         <input
           type="text"
           value={username}
+          placeholder="Username"
           onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="text"
+          value={password}
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Login</button>
       </form>
