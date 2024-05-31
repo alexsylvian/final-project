@@ -1,8 +1,10 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 from config import db
+from app import bcrypt
 
 # Association table for the many-to-many relationship between User and Subtask
 user_subtask_association = Table('user_subtask_association', db.Model.metadata,
@@ -15,6 +17,7 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
+    _password_hash = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     position = db.Column(db.String)
     projects = db.relationship("Project", backref="user", lazy=True)  # One-to-many relationship with projects
@@ -25,6 +28,21 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f"User(id={self.id}, username={self.username}, created_at={self.created_at}, position={self.position})"
     
+    @hybrid_property
+    def password_hash(self):
+        return self._password_hash
+
+    @password_hash.setter
+    def password_hash(self, password):
+        """Set the user's password."""
+        # utf-8 encoding and decoding is required in python 3
+        password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
+        self._password_hash = password_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        """Check if the provided password matches the user's password."""
+        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -32,7 +50,6 @@ class User(db.Model, SerializerMixin):
             'created_at': self.created_at.isoformat(),  # Convert to ISO format for JSON serialization
             'position': self.position
         }
-
 
 class Project(db.Model):
     __tablename__ = 'projects'

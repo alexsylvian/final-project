@@ -153,7 +153,6 @@ function ProjectPage() {
                 if (!response.ok) {
                     throw new Error('Failed to delete subtask');
                 }
-                // Remove the deleted subtask from the local state
                 setProject(prevProject => ({
                     ...prevProject,
                     subtasks: prevProject.subtasks.filter(subtask => subtask.id !== subtaskId)

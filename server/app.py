@@ -4,7 +4,7 @@
 import logging
 
 # Remote library imports
-from flask import request, jsonify, session, make_response
+from flask import request, jsonify, session, make_response, Bcrypt
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -16,6 +16,8 @@ from crud import add_project, get_projects, add_user
 from models import User, Project, Subtask
 
 # Views go here!
+
+bcrypt = Bcrypt(app)
 # @app.before_request
 # def check_if_logged_in():
 #     open_access_list = [
