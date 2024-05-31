@@ -10,26 +10,13 @@ function Home() {
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([])
+  const [warningData, setWarningData] = useState('')
 
   useEffect(() => {
     fetch('/projects')
       .then(response => response.json())
       .then(data => setProjects(data))
       .catch(error => console.error('Error fetching projects:', error));
-
-    // fetch('/users')
-    //   .then(response => response.json())
-    //   .then(data => setUsers(data))
-    //   .catch(error => console.error('Error fetching projects:', error));
-    
-    // fetch("/check_session").then((res) => {
-    //     if (res.ok) {
-    //       res.json().then((user) => {
-    //         setUser(user)
-    //         console.log(user.username)
-    //       })
-    //     }
-    //   });
   }, []);
 
   useEffect(() => {
@@ -52,10 +39,18 @@ function Home() {
   }, []);
 
   function handleLogin(user) {
-    if(user.username){
+    if (user.username) {
       setUser(user);
       console.log(user.username);
       console.log(user.id);
+    } else {
+      setWarningData("Wrong Username or Password");
+      // Add styling for the warning
+      document.getElementById('warning').style.color = 'red';
+      // Hide the warning after ten seconds
+      setTimeout(() => {
+        setWarningData(""); // Clear the warning
+      }, 10000); // 10 seconds in milliseconds
     }
   }
 
@@ -94,6 +89,7 @@ function Home() {
       {!user ? (
         <>
           <Login onLogin={handleLogin} />
+          <p id='warning'>{warningData}</p>
           <RegistrationForm onRegister={handleRegister} />
         </>
       ) : (
