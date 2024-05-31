@@ -10,6 +10,7 @@ from faker import Faker
 from app import app, db
 from models import Project, Subtask, User
 from datetime import datetime, timedelta
+import bcrypt
 
 if __name__ == '__main__':
     fake = Faker()
@@ -21,10 +22,13 @@ if __name__ == '__main__':
             
             # Seed users
             for _ in range(5):
+                password = fake.password()  # Generate a random password
+                hashed_password = bcrypt.hashpw(password('utf-8'), bcrypt.gensalt())
                 user = User(
                     username=fake.user_name(),
                     created_at=fake.date_time_this_year(),
-                    position=rc(positions)
+                    position=rc(positions),
+                    password_hash=hashed_password  # Set the hashed password
                 )
                 db.session.add(user)
 

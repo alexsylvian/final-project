@@ -4,7 +4,7 @@
 import logging
 
 # Remote library imports
-from flask import request, jsonify, session, make_response, Bcrypt
+from flask import request, jsonify, session, make_response
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -16,8 +16,6 @@ from crud import add_project, get_projects, add_user
 from models import User, Project, Subtask
 
 # Views go here!
-
-bcrypt = Bcrypt(app)
 # @app.before_request
 # def check_if_logged_in():
 #     open_access_list = [
@@ -32,17 +30,23 @@ bcrypt = Bcrypt(app)
 class Login(Resource):
 
     def post(self):
-        user = User.query.filter(
-            User.username == request.get_json()['username']
-        ).first()
-        print(user.username)
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
 
-        app.logger.debug(f"Session before setting user ID: {session}")
+        if not username or not password:
+            return {'message': 'Missing username or password'}, 400
+
+        user = User.query.filter_by(username=username).first()
+
+        if not user or not user.authenticate(password):
+            return {'message': 'Invalid username or password'}, 401
+
         session['user_id'] = user.id
         app.logger.debug(f"Session after setting user ID: {session}")
-        print(session['user_id'])
+        
         return user.to_dict()
-    
+
 api.add_resource(Login, '/login')
 
 logging.basicConfig(level=logging.DEBUG)  # Set the logging level to DEBUG

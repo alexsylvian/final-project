@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 from config import db
-from app import bcrypt
+import bcrypt
 
 # Association table for the many-to-many relationship between User and Subtask
 user_subtask_association = Table('user_subtask_association', db.Model.metadata,
@@ -35,8 +35,8 @@ class User(db.Model, SerializerMixin):
     @password_hash.setter
     def password_hash(self, password):
         """Set the user's password."""
-        # utf-8 encoding and decoding is required in python 3
-        password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
+        password_hash = bcrypt.generate_password_hash(
+            password.encode('utf-8'))
         self._password_hash = password_hash.decode('utf-8')
 
     def authenticate(self, password):
