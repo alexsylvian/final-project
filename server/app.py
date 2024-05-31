@@ -181,6 +181,28 @@ class SubtaskId(Resource):
                 return {"message": "Subtask not found"}, 404
         else:
             return {"message": "Project not found"}, 404
+        
+    def patch(self, project_id, subtask_id):
+        # Retrieve the data from the request
+        data = request.get_json()
+
+        # Retrieve the project and subtask from the database
+        project = Project.query.get(project_id)
+        subtask = Subtask.query.get(subtask_id)
+
+        # Check if both project and subtask exist
+        if not project:
+            return {"message": "Project not found"}, 404
+        if not subtask:
+            return {"message": "Subtask not found"}, 404
+
+        # Update the completion status of the subtask
+        if 'completion_status' in data:
+            subtask.completion_status = data['completion_status']
+            db.session.commit()
+            return {"message": "Subtask completion status updated successfully"}, 200
+        else:
+            return {"error": "Missing 'completion_status' in request body"}, 400
 
 api.add_resource(SubtaskId, '/projects/<int:project_id>/subtasks/<int:subtask_id>')
 

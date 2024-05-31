@@ -116,6 +116,34 @@ function ProjectPage() {
         console.log('close')
     }
 
+    function handleSubtaskCompletion(subtaskId, newCompletionStatus) {
+        fetch(`/projects/${id}/subtasks/${subtaskId}`, {
+            method: 'PATCH', // Use PATCH method for partial updates
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ completion_status: newCompletionStatus }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update subtask completion status');
+            }
+            // Update the completion status of the subtask in the local state
+            setProject(prevProject => ({
+                ...prevProject,
+                subtasks: prevProject.subtasks.map(subtask => {
+                    if (subtask.id === subtaskId) {
+                        return { ...subtask, completion_status: newCompletionStatus };
+                    }
+                    return subtask;
+                })
+            }));
+        })
+        .catch(error => {
+            console.error('Error updating subtask completion status:', error);
+        });
+    }
+
     return (
         <>
             <NavBar />
@@ -135,7 +163,7 @@ function ProjectPage() {
                                         <input
                                             type="checkbox"
                                             checked={subtask.completion_status}
-                                            // onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
+                                            onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
                                         />
                                         <span>{subtask.name}</span>
                                     </li>
