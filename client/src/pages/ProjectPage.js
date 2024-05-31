@@ -118,7 +118,7 @@ function ProjectPage() {
 
     function handleSubtaskCompletion(subtaskId, newCompletionStatus) {
         fetch(`/projects/${id}/subtasks/${subtaskId}`, {
-            method: 'PATCH', // Use PATCH method for partial updates
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -144,6 +144,27 @@ function ProjectPage() {
         });
     }
 
+    function handleDeleteSubtask(subtaskId) {
+        if (window.confirm("Are you sure you want to delete this subtask?")) {
+            fetch(`/projects/${id}/subtasks/${subtaskId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete subtask');
+                }
+                // Remove the deleted subtask from the local state
+                setProject(prevProject => ({
+                    ...prevProject,
+                    subtasks: prevProject.subtasks.filter(subtask => subtask.id !== subtaskId)
+                }));
+            })
+            .catch(error => {
+                console.error('Error deleting subtask:', error);
+            });
+        }
+    }
+
     return (
         <>
             <NavBar />
@@ -166,6 +187,7 @@ function ProjectPage() {
                                             onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
                                         />
                                         <span>{subtask.name}</span>
+                                        <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
                                     </li>
                                     <button onClick={() => openModal(subtask)}>
                                         {modalOpen ? "-" : "+"}
