@@ -10,7 +10,8 @@ from faker import Faker
 from app import app, db
 from models import Project, Subtask, User
 from datetime import datetime, timedelta
-import bcrypt
+# from flask_bcrypt import Bcrypt, bcrypt
+from config import bcrypt
 
 if __name__ == '__main__':
     fake = Faker()
@@ -23,13 +24,15 @@ if __name__ == '__main__':
             # Seed users
             for _ in range(5):
                 password = fake.password()  # Generate a random password
-                hashed_password = bcrypt.hashpw(password('utf-8'), bcrypt.gensalt())
+                print(password)
+                hashed_password = bcrypt.generate_password_hash(
+                password.encode('utf-8'))
                 user = User(
                     username=fake.user_name(),
                     created_at=fake.date_time_this_year(),
-                    position=rc(positions),
-                    password_hash=hashed_password  # Set the hashed password
+                    position=rc(positions),  # Set the hashed password
                 )
+                user.password_hash = password
                 db.session.add(user)
 
             # Seed projects and subtasks

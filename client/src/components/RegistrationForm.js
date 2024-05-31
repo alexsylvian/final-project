@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 // Validation schema using Yup
 const formSchema = yup.object().shape({
-  username: yup.string().required("username is required"),
-  position: yup.string().required("position is required"),
+  username: yup.string().required("Username is required"),
+  position: yup.string().required("Position is required"),
+  password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+  confirmPassword: yup.string().required("Confirm Password is required").oneOf([yup.ref('password'), null], 'Passwords must match')
 });
 
 // Custom hook for handling form logic
@@ -20,33 +22,34 @@ function useFormLogic({ initialValues, onSubmit }) {
 }
 
 function RegistrationForm({ onRegister }) {
+  const [serverError, setServerError] = useState("");
+
   const formik = useFormLogic({
     initialValues: {
       username: "",
       position: "",
+      password: "",
+      confirmPassword: ""
     },
-    onSubmit: (values, { resetForm }) => {
-      console.log("Form submitted with values:", values);
-      fetch("/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Registration failed");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          onRegister(data);
-          resetForm();
-        })
-        .catch((error) => {
-          console.error("Registration error:", error);
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await fetch("/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
         });
+        if (!response.ok) {
+          throw new Error("Registration failed");
+        }
+        const data = await response.json();
+        onRegister(data);
+        resetForm();
+      } catch (error) {
+        console.error("Registration error:", error);
+        setServerError("Registration failed. Please try again.");
+      }
     },
   });
 
@@ -82,6 +85,35 @@ function RegistrationForm({ onRegister }) {
             <div>{formik.errors.position}</div>
           )}
         </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.password && formik.errors.password && (
+            <div>{formik.errors.password}</div>
+          )}
+        </div>
+        <div>
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+            <div>{formik.errors.confirmPassword}</div>
+          )}
+        </div>
+        {serverError && <div>{serverError}</div>}
         <button type="submit">Register</button>
       </form>
     </div>

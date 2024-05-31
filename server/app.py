@@ -8,10 +8,13 @@ from flask import request, jsonify, session, make_response
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+# from flask_bcrypt import Bcrypt, generate_password_hash, bcrypt
+# from flask.ext.bcrypt import Bcrypt
 
 # Local imports
-from config import app, db, api
+from config import app, db, api, bcrypt
 from crud import add_project, get_projects, add_user
+
 # Add your model imports
 from models import User, Project, Subtask
 
@@ -255,16 +258,28 @@ def register():
     data = request.get_json()
     username = data.get('username')
     position = data.get('position')
+    password = data.get('password')
 
+    # Check if the username already exists
     if User.query.filter_by(username=username).first() is not None:
         return jsonify({'message': 'Username already exists'}), 400
-    
+
+    # Hash the password using bcrypt
+    # hashed_password = bcrypt.generate_password_hash(
+    #         password.encode('utf-8'))
+
+    # Create a new user with hashed password
     user = User(username=username, position=position)
-    print(user)
+    user.password_hash = password
+
+    # Add the user to the database
     db.session.add(user)
     db.session.commit()
+
+    # Set the user's ID in the session
     session['user_id'] = user.id
 
+    # Return the user data
     return jsonify(user.to_dict()), 201
 
 if __name__ == '__main__':
