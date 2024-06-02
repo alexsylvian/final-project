@@ -98,18 +98,18 @@ function ProjectPage() {
         }
     }
 
-    // useEffect(() => {
-    //     fetch("/check_session").then((res) => {
-    //         if (res.ok) {
-    //             res.json().then((user) => {
-    //                 setUser(user);
-    //                 if (user) {
-    //                     formik.setFieldValue("creatorId", user.id);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }, [formik]);
+    useEffect(() => {
+        fetch("/check_session").then((res) => {
+            if (res.ok) {
+                res.json().then((user) => {
+                    setUser(user);
+                    if (user) {
+                        formik.setFieldValue("creatorId", user.id);
+                    }
+                });
+            }
+        });
+    }, []);
 
     useEffect(() => {
         fetch("/users")
@@ -191,6 +191,14 @@ function ProjectPage() {
     }
 
     function addUserToSubtask(subtaskId) {
+        const subtask = project.subtasks.find(subtask => subtask.id === subtaskId);
+        const isUserAlreadyAttached = subtask.users_attached.some(user => user.id === parseInt(userToBeAdded));
+
+        if (isUserAlreadyAttached) {
+            alert("This user is already associated with the subtask");
+            return;
+        }
+        
         setProject(prevProject => {
             const updatedProject = { ...prevProject };
             const updatedSubtasks = updatedProject.subtasks.map(subtask => {

@@ -209,8 +209,10 @@ class SubtaskId(Resource):
         
     def delete(self, project_id, subtask_id):
         # Retrieve the project and subtask from the database
+        print(5)
         project = Project.query.get(project_id)
         subtask = Subtask.query.get(subtask_id)
+        print(subtask.users)
 
         # Check if both project and subtask exist
         if not project:
@@ -219,6 +221,9 @@ class SubtaskId(Resource):
             return {"message": "Subtask not found"}, 404
 
         # Delete the subtask
+        subtask.users.clear()
+        print(subtask.users)
+        db.session.commit()
         db.session.delete(subtask)
         db.session.commit()
 
@@ -248,6 +253,12 @@ class AddUserToSubtask(Resource):
         
         if not user:
             return {'error': 'User not found'}, 404
+        
+        print(subtask.users)
+        print(user)
+        
+        if any(sub_user.username == user.username for sub_user in subtask.users):
+            return {'message': 'User is already associated with the subtask'}, 200
 
         subtask.users.append(user)
         db.session.commit()

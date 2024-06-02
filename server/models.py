@@ -89,7 +89,7 @@ class Subtask(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    users = db.relationship("User", secondary=user_subtask_association, back_populates="subtasks")
+    users = db.relationship("User", secondary=user_subtask_association, back_populates="subtasks", cascade="all, delete")
 
     def __repr__(self):
         return f"Subtask(id={self.id}, name={self.name}, created_at={self.created_at}, completion_status={self.completion_status}, project_id={self.project_id}, creator_id={self.creator_id})"

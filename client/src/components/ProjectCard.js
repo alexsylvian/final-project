@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";;
 
-function ProjectCard({ title, id, subtasks, createdAt }) {
+function ProjectCard({ title, id, subtasks, createdAt, dueDate }) {
     const [showSubtasks, setShowSubtasks] = useState(false);
 
     function toggleSubtasks(){
@@ -23,6 +23,7 @@ function ProjectCard({ title, id, subtasks, createdAt }) {
             {showSubtasks ? "Hide Subtasks" : "Show Subtasks"}
           </button>
           <Link to={`/projects/${id}`}>View Project Info</Link>
+          <h5>Due: {dueDate}</h5>
         </article>
       );
     }
