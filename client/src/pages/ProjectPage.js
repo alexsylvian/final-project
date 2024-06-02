@@ -190,6 +190,31 @@ function ProjectPage() {
     }
 
     function addUserToSubtask(subtaskId) {
+        setProject(prevProject => {
+            const updatedProject = { ...prevProject };
+            const updatedSubtasks = updatedProject.subtasks.map(subtask => {
+                if (subtask.id === subtaskId) {
+                    const newUser = users.find(user => user.id === userToBeAdded);
+                    if (newUser) {
+                        return {
+                            ...subtask,
+                            users_attached: [
+                                ...subtask.users_attached,
+                                { id: newUser.id, username: newUser.username }
+                            ]
+                        };
+                    } else {
+                        return subtask;
+                    }
+                }
+                return subtask;
+            });
+            updatedProject.subtasks = updatedSubtasks;
+            return updatedProject;
+        });
+    
+        closeModal();
+    
         fetch(`/subtasks/${subtaskId}/add_user`, {
             method: 'POST',
             headers: {
@@ -201,8 +226,6 @@ function ProjectPage() {
             if (!response.ok) {
                 throw new Error('Failed to add user to subtask');
             }
-            // Optionally, you can update the UI here to reflect the changes
-            closeModal(); // Close the modal after successfully adding the user
         })
         .catch(error => {
             console.error('Error adding user to subtask:', error);
