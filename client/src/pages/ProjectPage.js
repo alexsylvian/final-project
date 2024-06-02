@@ -214,7 +214,7 @@ function ProjectPage() {
         });
     
         closeModal();
-    
+
         fetch(`/subtasks/${subtaskId}/add_user`, {
             method: 'POST',
             headers: {
@@ -226,6 +226,19 @@ function ProjectPage() {
             if (!response.ok) {
                 throw new Error('Failed to add user to subtask');
             }
+            fetch(`/projects/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch project');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setProject(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching project:', error);
+                });
         })
         .catch(error => {
             console.error('Error adding user to subtask:', error);
