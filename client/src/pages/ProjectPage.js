@@ -10,9 +10,10 @@ function ProjectPage() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [users, setUsers] = useState([])
     const [modalOpen, setModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState("");
     const [currentSubtask, setCurrentSubtask] = useState("")
+    const [userToBeAdded, setUserToBeAdded] = useState(null)
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string().required("Subtask name is required"),
@@ -38,6 +39,9 @@ function ProjectPage() {
             })
             .then(data => {
                 setProject(data);
+                if (user) {
+                    formik.setFieldValue("creatorId", user.id);
+                }
                 setLoading(false);
             })
             .catch(error => {
@@ -97,11 +101,30 @@ function ProjectPage() {
         fetch("/check_session").then((res) => {
             if (res.ok) {
                 res.json().then((user) => {
-                    setUser(user)
-                    formik.setFieldValue("creatorId", user.id);
+                    setUser(user);
+                    // Set creatorId only once when user data is fetched
+                    if (user) {
+                        formik.setFieldValue("creatorId", user.id);
+                    }
                 });
             }
         });
+    }, [formik]);
+
+    useEffect(() => {
+        fetch("/users")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch users');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUsers(data);
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
+            });
     }, []);
 
     function openModal(subtask) {
@@ -128,7 +151,6 @@ function ProjectPage() {
             if (!response.ok) {
                 throw new Error('Failed to update subtask completion status');
             }
-            // Update the completion status of the subtask in the local state
             setProject(prevProject => ({
                 ...prevProject,
                 subtasks: prevProject.subtasks.map(subtask => {
@@ -164,6 +186,10 @@ function ProjectPage() {
         }
     }
 
+    function handleUserSelection(event) {
+        setUserToBeAdded(event.target.value);
+    }
+
     return (
         <>
             <NavBar />
@@ -180,12 +206,12 @@ function ProjectPage() {
                             {project.subtasks.map(subtask => (
                                 <React.Fragment key={subtask.id}>
                                     <li>
+                                        <h3>{subtask.name}</h3>
                                         <input
                                             type="checkbox"
                                             checked={subtask.completion_status}
                                             onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
                                         />
-                                        <span>{subtask.name}</span>
                                         <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
                                     </li>
                                     <button onClick={() => openModal(subtask)}>
@@ -211,20 +237,25 @@ function ProjectPage() {
                     </div>
 
                     <div className={modalOpen ? "modal-open" : "modal"}>
-                    <div className="modal-content">
+                        <div className="modal-content">
                             <span className="close" onClick={closeModal}>&times;</span>
-                            <p>
-                                Hello, this is the
-                                <br></br> 
-                                {currentSubtask.name}
-                                <br></br> subtask. 
-                                <li>Edit</li>
-                                <li>Add User</li>
-                                <li>Mark Complete / Incomplete</li>
-                                <li>Delete</li>
-                            </p>
+                                <div>
+                                    Hello, this is the <br></br> {currentSubtask.name}<br></br> subtask. 
+                                    <ul>
+                                        <li>
+                                            Add User: 
+                                            <select onChange={handleUserSelection}>
+                                                <option value="">Select User</option>
+                                                {users.map(user => (
+                                                    <option key={user.id} value={user.id}>{user.username}</option>
+                                                ))}
+                                            </select>
+                                            {/* <button onClick={() => addUserToSubtask(currentSubtask.id)}>Add User</button> */}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     </>
                 ) : (
                     <p>Project not found</p>

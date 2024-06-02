@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 from config import db, bcrypt
-# from flask_bcrypt import Bcrypt, bcrypt, generate_password_hash
 
 user_subtask_association = Table('user_subtask_association', db.Model.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
@@ -102,5 +101,6 @@ class Subtask(db.Model):
             "created_at": self.created_at,
             "completion_status": self.completion_status,
             "project_id": self.project_id,
-            "creator_id": self.creator_id
+            "creator_id": self.creator_id,
+            "user_ids": [user.id for user in self.users]
         }
