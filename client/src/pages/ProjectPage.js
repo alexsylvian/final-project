@@ -3,6 +3,7 @@ import NavBar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import "../styles.css";
 
 function ProjectPage() {
     const { id } = useParams();
@@ -97,18 +98,18 @@ function ProjectPage() {
         }
     }
 
-    useEffect(() => {
-        fetch("/check_session").then((res) => {
-            if (res.ok) {
-                res.json().then((user) => {
-                    setUser(user);
-                    if (user) {
-                        formik.setFieldValue("creatorId", user.id);
-                    }
-                });
-            }
-        });
-    }, [formik]);
+    // useEffect(() => {
+    //     fetch("/check_session").then((res) => {
+    //         if (res.ok) {
+    //             res.json().then((user) => {
+    //                 setUser(user);
+    //                 if (user) {
+    //                     formik.setFieldValue("creatorId", user.id);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }, [formik]);
 
     useEffect(() => {
         fetch("/users")
@@ -258,27 +259,28 @@ function ProjectPage() {
                         <h2>{project.name}</h2>
                         <p>Created {project.created_at}</p>
                         <ul>
-                            {project.subtasks.map(subtask => (
-                                <React.Fragment key={subtask.id}>
-                                    <li>
-                                        <h3>{subtask.name}</h3>
-                                        <input
-                                            type="checkbox"
-                                            checked={subtask.completion_status}
-                                            onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
-                                        />
-                                        <ul>
-                                            {subtask.users_attached.map(user => (
-                                                <li key={user.id}>{user.username}</li>
-                                            ))}
-                                        </ul>
-                                        <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
-                                    </li>
-                                    <button onClick={() => openModal(subtask)}>
-                                        {modalOpen ? "-" : "+"}
-                                    </button>
-                                </React.Fragment>
-                            ))}
+                        {project.subtasks.map(subtask => (
+                            <div key={subtask.id} className="subtask-container">
+                            <div className="subtask">
+                                <h3>{subtask.name}</h3>
+                                <input
+                                    type="checkbox"
+                                    checked={subtask.completion_status}
+                                    onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
+                                />
+                                <p className="bold-text">Users Responsible for this Subtask:</p>
+                                <ul>
+                                    {subtask.users_attached.map(user => (
+                                        <li key={user.id}>{user.username}</li>
+                                    ))}
+                                </ul>
+                                <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
+                            </div>
+                            <button onClick={() => openModal(subtask)}>
+                                {modalOpen ? "-" : "+"}
+                            </button>
+                        </div>
+                        ))}
                         </ul>
                         <form onSubmit={formik.handleSubmit}>
                             <input
@@ -300,7 +302,7 @@ function ProjectPage() {
                         <div className="modal-content">
                             <span className="close" onClick={closeModal}>&times;</span>
                                 <div>
-                                    Hello, this is the <br></br> {currentSubtask.name}<br></br> subtask. 
+                                    Please select user to add to the {currentSubtask.name} subtask. 
                                     <ul>
                                         <li>
                                             Add User: 
