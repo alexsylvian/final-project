@@ -102,5 +102,5 @@ class Subtask(db.Model):
             "completion_status": self.completion_status,
             "project_id": self.project_id,
             "creator_id": self.creator_id,
-            "user_ids": [user.id for user in self.users]
+            "users_attached": [user.to_dict() for user in self.users]
         }

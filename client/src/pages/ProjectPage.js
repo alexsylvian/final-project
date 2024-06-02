@@ -102,7 +102,6 @@ function ProjectPage() {
             if (res.ok) {
                 res.json().then((user) => {
                     setUser(user);
-                    // Set creatorId only once when user data is fetched
                     if (user) {
                         formik.setFieldValue("creatorId", user.id);
                     }
@@ -190,6 +189,26 @@ function ProjectPage() {
         setUserToBeAdded(event.target.value);
     }
 
+    function addUserToSubtask(subtaskId) {
+        fetch(`/subtasks/${subtaskId}/add_user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: userToBeAdded }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add user to subtask');
+            }
+            // Optionally, you can update the UI here to reflect the changes
+            closeModal(); // Close the modal after successfully adding the user
+        })
+        .catch(error => {
+            console.error('Error adding user to subtask:', error);
+        });
+    }
+
     return (
         <>
             <NavBar />
@@ -212,6 +231,11 @@ function ProjectPage() {
                                             checked={subtask.completion_status}
                                             onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
                                         />
+                                        <ul>
+                                            {subtask.users_attached.map(user => (
+                                                <li key={user.id}>{user.username}</li>
+                                            ))}
+                                        </ul>
                                         <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
                                     </li>
                                     <button onClick={() => openModal(subtask)}>
@@ -250,7 +274,7 @@ function ProjectPage() {
                                                     <option key={user.id} value={user.id}>{user.username}</option>
                                                 ))}
                                             </select>
-                                            {/* <button onClick={() => addUserToSubtask(currentSubtask.id)}>Add User</button> */}
+                                            <button onClick={() => addUserToSubtask(currentSubtask.id)}>Add User</button>
                                         </li>
                                     </ul>
                                 </div>

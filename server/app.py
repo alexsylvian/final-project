@@ -232,6 +232,30 @@ class Users(Resource):
     
 api.add_resource(Users, '/users')
 
+class AddUserToSubtask(Resource):
+    def post(self, subtask_id):
+        data = request.json
+        user_id = data.get('user_id')
+
+        if not user_id:
+            return {'error': 'User ID is required'}, 400
+
+        subtask = Subtask.query.get(subtask_id)
+        user = User.query.get(user_id)
+
+        if not subtask:
+            return {'error': 'Subtask not found'}, 404
+        
+        if not user:
+            return {'error': 'User not found'}, 404
+
+        subtask.users.append(user)
+        db.session.commit()
+
+        return {'message': 'User added to subtask successfully'}, 200
+
+api.add_resource(AddUserToSubtask, '/subtasks/<int:subtask_id>/add_user')
+
 # class Register(Resource):
 #     def post(self):
 #         data = request.get_json()
