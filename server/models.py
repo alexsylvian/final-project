@@ -8,8 +8,10 @@ from config import db, bcrypt
 priority_levels = Enum('low', 'medium', 'high', 'severe')
 
 user_subtask_association = Table('user_subtask_association', db.Model.metadata,
+    # Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id')),
-    Column('subtask_id', Integer, ForeignKey('subtasks.id'))
+    Column('subtask_id', Integer, ForeignKey('subtasks.id')),
+    Column('priority', priority_levels, default='low')
 )
 
 class User(db.Model, SerializerMixin):
