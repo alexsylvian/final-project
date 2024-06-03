@@ -1,9 +1,11 @@
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import Table, Column, Integer, ForeignKey, Enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 from config import db, bcrypt
+
+priority_levels = Enum('low', 'medium', 'high', 'severe')
 
 user_subtask_association = Table('user_subtask_association', db.Model.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),

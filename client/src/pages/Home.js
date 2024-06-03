@@ -113,7 +113,6 @@ function Home() {
         </>
       ) : (
       <div>
-        <p>Hello, {user.username}</p>
         <input
           type="text"
           placeholder="Search projects by name"

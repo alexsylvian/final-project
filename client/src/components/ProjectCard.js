@@ -17,7 +17,9 @@ function ProjectCard({ title, id, subtasks, createdAt, dueDate, completed, onTog
           {showSubtasks && (
             <ul>
               {subtasks.map((subtask, index) => (
-                <li key={index}>{subtask}</li>
+                <li key={index}>
+                  {subtask} - {subtask.completion_status ? 'Incomplete' : 'Complete'}
+                </li>
               ))}
             </ul>
           )}
