@@ -55,7 +55,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    due_date = db.Column(db.DateTime, nullable=True)
+    due_date = db.Column(db.Date, nullable=True)
     completion_status = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subtasks = db.relationship('Subtask', backref='project', lazy=True)
@@ -69,7 +69,7 @@ class Project(db.Model):
             'name': self.name,
             'subtasks': [subtask.to_dict() for subtask in self.subtasks],
             'created_at': self.created_at,
-            'due-date': self.due_date,
+            'due_date': self.due_date,
             'completion_status': self.completion_status,
             'user_id': self.user_id
         }

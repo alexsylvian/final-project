@@ -47,7 +47,7 @@ if __name__ == '__main__':
                 for _ in range(3):
                     subtask = Subtask(
                         name=fake.sentence(),
-                        created_at=fake.date_time_this_year(),
+                        created_at=fake.date_this_year(),
                         completion_status=fake.boolean(),  # Randomly assign a completion status
                         project=project,
                         creator_id=randint(1, 5)  # Randomly assign a creator_id
@@ -56,6 +56,7 @@ if __name__ == '__main__':
 
             # Commit changes to the database
             db.session.commit()
+            print("here?")
             print("Seed complete!")
         except Exception as e:
             print("Error:", e)

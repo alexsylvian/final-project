@@ -126,7 +126,7 @@ class ProjectID(Resource):
                 'name': project.name,
                 'subtasks': [subtask.to_dict() for subtask in project.subtasks],
                 'created_at': project.created_at,
-                'due-date': project.due_date,
+                'due_date': project.due_date,
                 'completion_status': project.completion_status,
                 'user_id': project.user_id
             }
