@@ -208,7 +208,6 @@ class SubtaskId(Resource):
             return {"error": "Missing 'completion_status' in request body"}, 400
         
     def delete(self, project_id, subtask_id):
-        # Retrieve the project and subtask from the database
         print(5)
         project = Project.query.get(project_id)
         subtask = Subtask.query.get(subtask_id)
@@ -264,7 +263,7 @@ class AddUserToSubtask(Resource):
         if any(sub_user.username == user.username for sub_user in subtask.users):
             return {'message': 'User is already associated with the subtask'}, 200
 
-        subtask.users.append(user)
+        db.session.execute(user_subtask_association.insert().values(user_id=user.id, subtask_id=subtask.id, priority=priority))
         db.session.commit()
 
         return {'message': 'User added to subtask successfully'}, 200
