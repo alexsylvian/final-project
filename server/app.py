@@ -270,6 +270,20 @@ class AddUserToSubtask(Resource):
 
 api.add_resource(AddUserToSubtask, '/subtasks/<int:subtask_id>/add_user')
 
+# class UserSubtaskAssociation(Resource):
+#     def get(self, user_id, subtask_id):
+#         association = user_subtask_association.query.filter_by(user_id=user_id, subtask_id=subtask_id).first()
+#         if association:
+#             return {
+#                 "user_id": association.user_id,
+#                 "subtask_id": association.subtask_id,
+#                 "priority": association.priority
+#             }, 200
+#         else:
+#             return {"message": "Association not found"}, 404
+        
+# api.add_resource(UserSubtaskAssociation, '/user_subtask_associations/<int:user_id>/<int:subtask_id>')
+
 # class Register(Resource):
 #     def post(self):
 #         data = request.get_json()
