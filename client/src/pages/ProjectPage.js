@@ -109,7 +109,7 @@ function ProjectPage() {
                 });
             }
         });
-    }, []);
+    }, [project]);
 
     useEffect(() => {
         fetch("/users")
@@ -198,7 +198,7 @@ function ProjectPage() {
             alert("This user is already associated with the subtask");
             return;
         }
-        
+
         setProject(prevProject => {
             const updatedProject = { ...prevProject };
             const updatedSubtasks = updatedProject.subtasks.map(subtask => {
@@ -271,6 +271,7 @@ function ProjectPage() {
                             <div key={subtask.id} className="subtask-container">
                             <div className="subtask">
                                 <h3>{subtask.name}</h3>
+                                <p>Mark Complete/Incomplete:</p>
                                 <input
                                     type="checkbox"
                                     checked={subtask.completion_status}
@@ -290,6 +291,7 @@ function ProjectPage() {
                         </div>
                         ))}
                         </ul>
+                        <h5>Due: {project.due_date}</h5>
                         <form onSubmit={formik.handleSubmit}>
                             <input
                                 type="text"

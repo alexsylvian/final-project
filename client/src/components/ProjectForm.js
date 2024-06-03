@@ -9,6 +9,7 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
     // userId: yup.number().required("Number is required")
   });
 
+  
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -35,7 +36,7 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
         })
         .then((data) => {
           addProject(data);
-          formik.resetForm(); // Reset form fields after successful submission
+          formik.resetForm();
         })
         .catch((error) => {
           console.error("Error adding project:", error);
@@ -66,17 +67,6 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
           value={formik.values.dueDate}
         />
         <p style={{ color: "red" }}> {formik.errors.dueDate}</p>
-
-        {/* <label htmlFor="userId">User Id - Standby</label>
-        <br />
-        <input
-          id="userId"
-          name="userId"
-          type="number"
-          onChange={formik.handleChange}
-          value={formik.values.userId}
-        />
-        <p style={{ color: "red" }}>{formik.errors.userId}</p> */}
         <button type="submit">Add Project</button>
       </form>
     </div>

@@ -9,13 +9,20 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState([])
-  const [warningData, setWarningData] = useState('')
+  const [users, setUsers] = useState([]);
+  const [warningData, setWarningData] = useState('');
 
   useEffect(() => {
     fetch('/projects')
       .then(response => response.json())
-      .then(data => setProjects(data))
+      .then(data => {
+        // Add completion status to each project
+        const projectsWithCompletion = data.map(project => ({
+          ...project,
+          completed: project.subtasks.every(subtask => subtask.completion_status)
+        }));
+        setProjects(projectsWithCompletion);
+      })
       .catch(error => console.error('Error fetching projects:', error));
   }, []);
 
@@ -66,11 +73,24 @@ function Home() {
   }
 
   function handleAddProject(newProject) {
-    setProjects([...projects, newProject]);
+    setProjects([...projects, { ...newProject, completed: false }]);
   }
 
   function handleSearch(e) {
     setSearchedProjects(e.target.value);
+  }
+
+  function toggleProjectCompletion(projectId) {
+    setProjects(prevProjects =>
+      prevProjects.map(project =>
+        project.id === projectId
+          ? {
+              ...project,
+              completed: project.subtasks.every(subtask => subtask.completion_status)
+          }
+          : project
+      )
+    );
   }
 
   const filteredProjects = projects.filter(project =>
@@ -79,7 +99,6 @@ function Home() {
 
   return (
     <div>
-      
       <NavBar onLogout={handleLogout} user={user}/>
       {!user ? (
         <h1>Please Login</h1>
@@ -104,7 +123,16 @@ function Home() {
         <h2>Projects</h2>
         <div className="project-cards">
           {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} title={project.name} id={project.id} subtasks={project.subtasks} createdAt={project.created_at} dueDate={project.due_date}/>
+            <ProjectCard
+              key={project.id}
+              title={project.name}
+              id={project.id}
+              subtasks={project.subtasks.map((subtask) => subtask.name)}
+              createdAt={project.created_at}
+              dueDate={project.due_date}
+              completed={project.completed} // Pass completion status to ProjectCard
+              onToggleCompletion={toggleProjectCompletion} // Pass function to toggle completion status
+            />
           ))}
         </div>
         <ProjectForm addProject={handleAddProject} userIdForProjects={user.id} />
