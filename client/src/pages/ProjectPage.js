@@ -18,7 +18,10 @@ function ProjectPage() {
     const [priority, setPriority] = useState("low");
 
     const formSchema = yup.object().shape({
-        newSubtask: yup.string().required("Subtask name is required"),
+        newSubtask: yup.string()
+            .matches(/^[a-zA-Z\s]+$/, 'Subtask name must contain only letters and spaces')
+            .required("Subtask name is required"),
+        creatorId: yup.number().required('Creator ID is required'),
     });
 
     const formik = useFormik({
