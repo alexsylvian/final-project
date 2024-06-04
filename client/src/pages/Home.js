@@ -126,7 +126,7 @@ function Home() {
               key={project.id}
               title={project.name}
               id={project.id}
-              subtasks={project.subtasks.map((subtask) => subtask.name)}
+              subtasks={project.subtasks.map((subtask) => subtask)}
               createdAt={project.created_at}
               dueDate={project.due_date}
               completed={project.completed} // Pass completion status to ProjectCard

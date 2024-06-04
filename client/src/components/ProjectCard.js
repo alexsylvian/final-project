@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";;
 
-function ProjectCard({ title, id, subtasks, createdAt, dueDate, completed, onToggleCompletion }) {
+function ProjectCard({ title, id, subtasks, createdAt, dueDate, completed }) {
     const [showSubtasks, setShowSubtasks] = useState(false);
 
     function toggleSubtasks() {
@@ -16,9 +16,9 @@ function ProjectCard({ title, id, subtasks, createdAt, dueDate, completed, onTog
           <p>{createdAt}</p>
           {showSubtasks && (
             <ul>
-              {subtasks.map((subtask, index) => (
-                <li key={index}>
-                  {subtask} - {subtask.completion_status ? 'Incomplete' : 'Complete'}
+              {subtasks.map((subtask) => (
+                <li key={subtask.id}>
+                  {subtask.name} - {subtask.completion_status ? 'Incomplete' : 'Complete'}
                 </li>
               ))}
             </ul>

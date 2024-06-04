@@ -15,6 +15,7 @@ function ProjectPage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [currentSubtask, setCurrentSubtask] = useState("")
     const [userToBeAdded, setUserToBeAdded] = useState(null)
+    const [priority, setPriority] = useState("low");
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string().required("Subtask name is required"),
@@ -224,12 +225,19 @@ function ProjectPage() {
     
         closeModal();
 
+        const payload = {
+            user_id: userToBeAdded,
+            priority: priority // Pass selected priority
+        };
+
+        console.log(payload)
+
         fetch(`/subtasks/${subtaskId}/add_user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_id: userToBeAdded }),
+            body: JSON.stringify(payload),
         })
         .then(response => {
             if (!response.ok) {
@@ -243,6 +251,7 @@ function ProjectPage() {
                     return response.json();
                 })
                 .then(data => {
+                    console.log(data)
                     setProject(data);
                 })
                 .catch(error => {
@@ -252,6 +261,25 @@ function ProjectPage() {
         .catch(error => {
             console.error('Error adding user to subtask:', error);
         });
+    }
+
+    function handlePriorityChange(e) {
+        setPriority(e.target.value);
+    }
+
+    function getColorForPriority(priority) {
+        switch (priority) {
+            case 'low':
+                return 'green';
+            case 'medium':
+                return 'blue';
+            case 'high':
+                return 'orange';
+            case 'severe':
+                return 'red';
+            default:
+                return 'black';
+        }
     }
 
     return (
@@ -279,8 +307,13 @@ function ProjectPage() {
                                 />
                                 <p className="bold-text">Users Responsible for this Subtask:</p>
                                 <ul>
-                                    {subtask.users_attached.map(user => (
-                                        <li key={user.id}>{user.username}</li>
+                                    {subtask.users_attached.map(attachedUser => (
+                                        <li key={attachedUser.user.id}>
+                                            {attachedUser.user.username} - Priority: 
+                                            <span style={{ color: getColorForPriority(attachedUser.priority) }}>
+                                                {attachedUser.priority.toUpperCase()}
+                                            </span>
+                                        </li>
                                     ))}
                                 </ul>
                                 <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
@@ -323,6 +356,15 @@ function ProjectPage() {
                                                 ))}
                                             </select>
                                             <button onClick={() => addUserToSubtask(currentSubtask.id)}>Add User</button>
+                                        </li>
+                                        <li>
+                                            Priority:
+                                            <select value={priority} onChange={handlePriorityChange}>
+                                                <option value="low">Low</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="high">High</option>
+                                                <option value="severe">Severe</option>
+                                            </select>
                                         </li>
                                     </ul>
                                 </div>
