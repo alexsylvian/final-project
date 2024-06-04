@@ -6,7 +6,6 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
   const formSchema = yup.object().shape({
     name: yup.string().required("Project name is required"),
     dueDate: yup.date().required("Due date is required"),
-    // userId: yup.number().required("Number is required")
   });
 
   

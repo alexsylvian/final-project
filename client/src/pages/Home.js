@@ -16,7 +16,6 @@ function Home() {
     fetch('/projects')
       .then(response => response.json())
       .then(data => {
-        // Add completion status to each project
         const projectsWithCompletion = data.map(project => ({
           ...project,
           completed: project.subtasks.every(subtask => subtask.completion_status)
@@ -52,12 +51,10 @@ function Home() {
       console.log(user.id);
     } else {
       setWarningData("Wrong Username or Password");
-      // Add styling for the warning
       document.getElementById('warning').style.color = 'red';
-      // Hide the warning after ten seconds
       setTimeout(() => {
-        setWarningData(""); // Clear the warning
-      }, 10000); // 10 seconds in milliseconds
+        setWarningData("");
+      }, 10000);
     }
   }
 
@@ -129,8 +126,8 @@ function Home() {
               subtasks={project.subtasks.map((subtask) => subtask)}
               createdAt={project.created_at}
               dueDate={project.due_date}
-              completed={project.completed} // Pass completion status to ProjectCard
-              onToggleCompletion={toggleProjectCompletion} // Pass function to toggle completion status
+              completed={project.completed}
+              onToggleCompletion={toggleProjectCompletion}
             />
           ))}
         </div>

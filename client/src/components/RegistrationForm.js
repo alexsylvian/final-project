@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-// Validation schema using Yup
 const formSchema = yup.object().shape({
   username: yup.string().required("Username is required"),
   position: yup.string().required("Position is required"),
@@ -10,7 +9,6 @@ const formSchema = yup.object().shape({
   confirmPassword: yup.string().required("Confirm Password is required").oneOf([yup.ref('password'), null], 'Passwords must match')
 });
 
-// Custom hook for handling form logic
 function useFormLogic({ initialValues, onSubmit }) {
   const formik = useFormik({
     initialValues,

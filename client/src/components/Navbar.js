@@ -12,7 +12,6 @@ function NavBar({ onLogout, user }) {
     <header>
       {user && <button onClick={handleLogout}>Logout</button>}
     </header>
-    {/* <h1>{user.username}</h1> */}
     <nav>
       <NavLink
         to="/"
