@@ -99,6 +99,13 @@ class Subtask(db.Model):
         return f"Subtask(id={self.id}, name={self.name}, created_at={self.created_at}, completion_status={self.completion_status}, project_id={self.project_id}, creator_id={self.creator_id})"
     
     def to_dict(self):
+        from sqlalchemy.orm import sessionmaker
+
+        Session = sessionmaker(bind=db.engine)
+        session = Session()
+
+        associations = session.query(user_subtask_association).filter_by(subtask_id=self.id).all()
+
         return {
             "id": self.id,
             "name": self.name,
@@ -106,5 +113,10 @@ class Subtask(db.Model):
             "completion_status": self.completion_status,
             "project_id": self.project_id,
             "creator_id": self.creator_id,
-            "users_attached": [user.to_dict() for user in self.users]
+            "users_attached": [
+                {
+                    "user": user.to_dict(),
+                    "priority": next((assoc.priority for assoc in associations if assoc.user_id == user.id), None)
+                } for user in self.users
+            ]
         }
