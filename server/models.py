@@ -8,7 +8,6 @@ from config import db, bcrypt
 priority_levels = Enum('low', 'medium', 'high', 'severe')
 
 user_subtask_association = Table('user_subtask_association', db.Model.metadata,
-    # Column('id', Integer, primary_key=True, autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id')),
     Column('subtask_id', Integer, ForeignKey('subtasks.id')),
     Column('priority', priority_levels, default='low')
@@ -22,8 +21,8 @@ class User(db.Model, SerializerMixin):
     _password_hash = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     position = db.Column(db.String)
-    projects = db.relationship("Project", backref="user", lazy=True)  # One-to-many relationship with projects
-    subtasks_created = db.relationship("Subtask", backref="creator", lazy=True)  # One-to-many relationship with subtasks
+    projects = db.relationship("Project", backref="user", lazy=True)
+    subtasks_created = db.relationship("Subtask", backref="creator", lazy=True)
 
     subtasks = db.relationship("Subtask", secondary=user_subtask_association, back_populates="users")
 
@@ -49,7 +48,7 @@ class User(db.Model, SerializerMixin):
         return {
             'id': self.id,
             'username': self.username,
-            'created_at': self.created_at.isoformat(),  # Convert to ISO format for JSON serialization
+            'created_at': self.created_at.isoformat(),
             'position': self.position
         }
 
@@ -60,12 +59,11 @@ class Project(db.Model):
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     due_date = db.Column(db.Date, nullable=True)
-    completion_status = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subtasks = db.relationship('Subtask', backref='project', lazy=True)
 
     def __repr__(self):
-        return f"Project(id={self.id}, name={self.name}, created_at={self.created_at}, due_date={self.due_date}, user_id={self.user_id}, completion_status={self.completion_status})"
+        return f"Project(id={self.id}, name={self.name}, created_at={self.created_at}, due_date={self.due_date}, user_id={self.user_id})"
     
     def to_dict(self):
         return {
@@ -74,13 +72,8 @@ class Project(db.Model):
             'subtasks': [subtask.to_dict() for subtask in self.subtasks],
             'created_at': self.created_at,
             'due_date': self.due_date,
-            'completion_status': self.completion_status,
             'user_id': self.user_id
         }
-    
-    def update_completion_status(self):
-        """Update the completion status of the project based on subtasks completion."""
-        self.completion_status = all(subtask.completion_status for subtask in self.subtasks)
 
 
 class Subtask(db.Model):

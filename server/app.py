@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Standard library imports
-import logging
 
 # Remote library imports
 from flask import request, jsonify, session, make_response
@@ -39,20 +38,14 @@ class Login(Resource):
 
 api.add_resource(Login, '/login')
 
-logging.basicConfig(level=logging.DEBUG)  # Set the logging level to DEBUG
-
 class CheckSession(Resource):
-
     def get(self):
         user_id = session.get('user_id')
-        logging.debug(f"Session user_id: {user_id}")
         
         user = User.query.filter(User.id == user_id).first()
         if user:
-            logging.debug(f"User found: {user.to_dict()}")
             return user.to_dict()
         else:
-            logging.warning("User not found or session expired")
             return {'message': '401: Not Authorized'}, 401
 
 api.add_resource(CheckSession, '/check_session')
@@ -117,7 +110,6 @@ class ProjectID(Resource):
                 'subtasks': [subtask.to_dict() for subtask in project.subtasks],
                 'created_at': project.created_at,
                 'due_date': project.due_date,
-                'completion_status': project.completion_status,
                 'user_id': project.user_id
             }
             print(project.name)
@@ -260,52 +252,32 @@ class AddUserToSubtask(Resource):
 
 api.add_resource(AddUserToSubtask, '/subtasks/<int:subtask_id>/add_user')
 
-# class Register(Resource):
-#     def post(self):
-#         data = request.get_json()
-#         username = data['username']
-#         position = data['position']
-#         password = data['password']
+class Register(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data['username']
+        position = data['position']
+        password = data['password']
 
-#         print(username)
+        print(username)
 
-#         if User.query.filter_by(username=username).first() is not None:
-#             return jsonify({'message': 'Username already exists'}), 400
+        if User.query.filter_by(username=username).first() is not None:
+            return jsonify({'message': 'Username already exists'}), 400
 
-#         user = User(username=username, position=position)
-#         user.password_hash = password
+        user = User(username=username, position=position)
+        user.password_hash = password
 
-#         print(user)
+        print(user)
     
-#         db.session.add(user)
-#         db.session.commit()
+        db.session.add(user)
+        db.session.commit()
 
-#         session['user_id'] = user.id
+        session['user_id'] = user.id
 
-#         return user, 201
+        return jsonify(user.to_dict()), 201
     
-# api.add_resource(Register, '/register')
-
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    username = data.get('username')
-    position = data.get('position')
-    password = data.get('password')
-
-    if User.query.filter_by(username=username).first() is not None:
-        return jsonify({'message': 'Username already exists'}), 400
-
-    user = User(username=username, position=position)
-    user.password_hash = password
-    
-    db.session.add(user)
-    db.session.commit()
-
-    session['user_id'] = user.id
-
-    return jsonify(user.to_dict()), 201
+api.add_resource(Register, '/register')
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(port=5555)
 
