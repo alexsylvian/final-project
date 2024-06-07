@@ -29,25 +29,28 @@ function RegistrationForm({ onRegister }) {
       password: "",
       confirmPassword: ""
     },
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const response = await fetch("/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
+    onSubmit: (values, { resetForm }) => {
+      fetch("/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      })
+      .then(response => {
         if (!response.ok) {
           throw new Error("Registration failed");
         }
-        const data = await response.json();
+        return response.json();
+      })
+      .then(data => {
         onRegister(data);
         resetForm();
-      } catch (error) {
+      })
+      .catch(error => {
         console.error("Registration error:", error);
         setServerError("Registration failed. Please try again.");
-      }
+      });
     },
   });
 

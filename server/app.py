@@ -11,22 +11,11 @@ from datetime import datetime
 
 # Local imports
 from config import app, db, api, bcrypt
-from crud import add_project, get_projects, add_user
 
 # Add your model imports
 from models import User, Project, Subtask, user_subtask_association
 
 # Views go here!
-# @app.before_request
-# def check_if_logged_in():
-#     open_access_list = [
-#         'signup',
-#         'login',
-#         'check_session'
-#     ]
-
-#     if (request.endpoint) not in open_access_list and (not session.get('user_id')):
-#         return {'error': '401 Unauthorized'}, 401
 
 class Login(Resource):
 
@@ -82,6 +71,7 @@ def index():
 
 class Projects(Resource):
     def get(self):
+        print('getting projects')
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     
     def post(self):
@@ -270,36 +260,29 @@ class AddUserToSubtask(Resource):
 
 api.add_resource(AddUserToSubtask, '/subtasks/<int:subtask_id>/add_user')
 
-# class UserSubtaskAssociation(Resource):
-#     def get(self, user_id, subtask_id):
-#         association = user_subtask_association.query.filter_by(user_id=user_id, subtask_id=subtask_id).first()
-#         if association:
-#             return {
-#                 "user_id": association.user_id,
-#                 "subtask_id": association.subtask_id,
-#                 "priority": association.priority
-#             }, 200
-#         else:
-#             return {"message": "Association not found"}, 404
-        
-# api.add_resource(UserSubtaskAssociation, '/user_subtask_associations/<int:user_id>/<int:subtask_id>')
-
 # class Register(Resource):
 #     def post(self):
 #         data = request.get_json()
-#         username = data.get('username')
-#         position = data.get('position')
+#         username = data['username']
+#         position = data['position']
+#         password = data['password']
+
+#         print(username)
 
 #         if User.query.filter_by(username=username).first() is not None:
 #             return jsonify({'message': 'Username already exists'}), 400
-    
+
 #         user = User(username=username, position=position)
+#         user.password_hash = password
+
 #         print(user)
+    
 #         db.session.add(user)
 #         db.session.commit()
+
 #         session['user_id'] = user.id
 
-#         return jsonify(user.to_dict()), 201
+#         return user, 201
     
 # api.add_resource(Register, '/register')
 

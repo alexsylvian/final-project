@@ -18,7 +18,7 @@ function ProjectCard({ title, id, subtasks, createdAt, dueDate, completed }) {
             <ul>
               {subtasks.map((subtask) => (
                 <li key={subtask.id}>
-                  {subtask.name} - {subtask.completion_status ? 'Incomplete' : 'Complete'}
+                  {subtask.name} - {subtask.completion_status ? 'Complete' : 'Incomplete'}
                 </li>
               ))}
             </ul>

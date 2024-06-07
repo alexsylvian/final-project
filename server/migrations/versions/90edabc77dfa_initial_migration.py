@@ -1,8 +1,8 @@
-"""new
+"""initial migration
 
-Revision ID: 1ae716cd2e58
+Revision ID: 90edabc77dfa
 Revises: 
-Create Date: 2024-06-02 19:53:00.217783
+Create Date: 2024-06-04 00:14:03.436204
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1ae716cd2e58'
+revision = '90edabc77dfa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -51,6 +51,7 @@ def upgrade():
     op.create_table('user_subtask_association',
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('subtask_id', sa.Integer(), nullable=True),
+    sa.Column('priority', sa.Enum('low', 'medium', 'high', 'severe'), nullable=True),
     sa.ForeignKeyConstraint(['subtask_id'], ['subtasks.id'], name=op.f('fk_user_subtask_association_subtask_id_subtasks')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_user_subtask_association_user_id_users'))
     )

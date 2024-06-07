@@ -13,17 +13,22 @@ function Home() {
   const [warningData, setWarningData] = useState('');
 
   useEffect(() => {
-    fetch('/projects')
-      .then(response => response.json())
-      .then(data => {
-        const projectsWithCompletion = data.map(project => ({
-          ...project,
-          completed: project.subtasks.every(subtask => subtask.completion_status)
-        }));
-        setProjects(projectsWithCompletion);
-      })
-      .catch(error => console.error('Error fetching projects:', error));
-  }, []);
+    if (user) {
+      fetch('/projects')
+        .then(response => response.json())
+        .then(console.log("anything?"))
+        .then(data => {
+          console.log(data)
+          const projectsWithCompletion = data.map(project => ({
+            ...project,
+            completed: project.subtasks.every(subtask => subtask.completion_status)
+          }));
+          setProjects(projectsWithCompletion);
+          console.log("data received")
+        })
+        .catch(error => console.error('Error fetching projects:', error));
+    }
+  }, [user]);
 
   useEffect(() => {
     fetch('/users')
@@ -34,11 +39,12 @@ function Home() {
 
   useEffect(() => {
     fetch("/check_session").then((res) => {
+      console.log("earlier check session")
       if (res.ok) {
         res.json().then((user) => {
+          console.log('check session')
           setUser(user)
           console.log(user.username)
-          console.log(user.id)
         })
       }
     });
