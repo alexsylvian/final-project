@@ -102,7 +102,7 @@ class Subtask(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "created_at": self.created_at,
+            "created_at": self.created_at.isoformat(),
             "completion_status": self.completion_status,
             "project_id": self.project_id,
             "creator_id": self.creator_id,

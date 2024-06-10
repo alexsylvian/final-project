@@ -29,88 +29,57 @@ def add_subtask(name):
 def get_subtasks():
     return Subtask.query.all()
 
+# class ProjectsWithMinSubtasks(Resource):
+#     def get(self, min_subtasks):
+#         projects = (
+#             db.session.query(Project)
+#             .join(Subtask, Project.id == Subtask.project_id)
+#             .group_by(Project.id)
+#             .having(func.count(Subtask.id) >= min_subtasks)
+#             .all()
+#         )
 
+#         project_list = [project.to_dict() for project in projects]
+#         return jsonify(project_list)
 
+# api.add_resource(ProjectsWithMinSubtasks, '/projects_with_min_subtasks/<int:min_subtasks>')
 
+# class SubtasksWithUser(Resource):
+#     def get(self, user_id):
+#         subtasks = Subtask.query.join(Subtask.users).filter(User.id == user_id).all()
 
+#         subtask_list = [subtask.to_dict() for subtask in subtasks]
+#         return jsonify(subtask_list), 200
 
+# api.add_resource(SubtasksWithUser, '/subtasks/user/<int:user_id>')
 
+# class ProjectsWithUser(Resource):
+#     def get(self, user_id):
+#         projects = (
+#             db.session.query(Project)
+#             .join(Subtask, Project.id == Subtask.project_id)
+#             .join(User, Subtask.users)
+#             .filter(User.id == user_id)
+#             .group_by(Project.id)
+#             .all()
+#         )
 
-# user_subtask_association = Table('user_subtask_association', db.Model.metadata,
-#     Column('id', Integer, primary_key=True),
-#     Column('user_id', Integer, ForeignKey('users.id')),
-#     Column('subtask_id', Integer, ForeignKey('subtasks.id')),
-#     Column('priority', Integer, default=0)  # Priority attribute
-# )
+#         project_list = [project.to_dict() for project in projects]
+#         return jsonify(project_list)
 
-# class AddUserToSubtask(Resource):
-#     def post(self, subtask_id):
-#         data = request.json
-#         user_id = data.get('user_id')
-#         priority = data.get('priority')  # Add priority attribute
-        
-#         if not user_id:
-#             return {'error': 'User ID is required'}, 400
+# api.add_resource(ProjectsWithUser, '/projects/with_user/<int:user_id>')
 
-#         subtask = Subtask.query.get(subtask_id)
-#         user = User.query.get(user_id)
+# class ProjectsWithIncompleteSubtasks(Resource):
+#     def get(self):
+#         projects = (
+#             db.session.query(Project)
+#             .join(Subtask, Project.id == Subtask.project_id)
+#             .filter(Subtask.completion_status == False)
+#             .group_by(Project.id)
+#             .all()
+#         )
 
-#         if not subtask:
-#             return {'error': 'Subtask not found'}, 404
-        
-#         if not user:
-#             return {'error': 'User not found'}, 404
-        
-#         if any(sub_user.username == user.username for sub_user in subtask.users):
-#             return {'message': 'User is already associated with the subtask'}, 200
+#         project_list = [project.to_dict() for project in projects]
+#         return jsonify(project_list)
 
-#         # Associate user with subtask and set priority
-#         db.session.execute(user_subtask_association.insert().values(user_id=user_id, subtask_id=subtask_id, priority=priority))
-#         db.session.commit()
-
-#         return {'message': 'User added to subtask successfully'}, 200
-
-# function addUserToSubtask(subtaskId) {
-#     const subtask = project.subtasks.find(subtask => subtask.id === subtaskId);
-#     const isUserAlreadyAttached = subtask.users_attached.some(user => user.id === parseInt(userToBeAdded));
-
-#     if (isUserAlreadyAttached) {
-#         alert("This user is already associated with the subtask");
-#         return;
-#     }
-
-#     // Add priority to the payload
-    # const payload = {
-    #     user_id: userToBeAdded,
-    #     priority: priority // Pass selected priority
-    # };
-
-#     fetch(`/subtasks/${subtaskId}/add_user`, {
-#         method: 'POST',
-#         headers: {
-#             'Content-Type': 'application/json',
-#         },
-#         body: JSON.stringify(payload), // Include priority in the request body
-#     })
-#     .then(response => {
-#         if (!response.ok) {
-#             throw new Error('Failed to add user to subtask');
-#         }
-#         fetch(`/projects/${id}`)
-#             .then(response => {
-#                 if (!response.ok) {
-#                     throw new Error('Failed to fetch project');
-#                 }
-#                 return response.json();
-#             })
-#             .then(data => {
-#                 setProject(data);
-#             })
-#             .catch(error => {
-#                 console.error('Error fetching project:', error);
-#             });
-#     })
-#     .catch(error => {
-#         console.error('Error adding user to subtask:', error);
-#     });
-# }
+# api.add_resource(ProjectsWithIncompleteSubtasks, '/projects/with_incomplete_subtasks')
