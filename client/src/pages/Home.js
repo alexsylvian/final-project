@@ -16,15 +16,12 @@ function Home() {
     if (user) {
       fetch('/projects')
         .then(response => response.json())
-        .then(console.log("anything?"))
         .then(data => {
-          console.log(data)
           const projectsWithCompletion = data.map(project => ({
             ...project,
             completed: project.subtasks.every(subtask => subtask.completion_status)
           }));
           setProjects(projectsWithCompletion);
-          console.log("data received")
         })
         .catch(error => console.error('Error fetching projects:', error));
     }
@@ -39,12 +36,9 @@ function Home() {
 
   useEffect(() => {
     fetch("/check_session").then((res) => {
-      console.log("earlier check session")
       if (res.ok) {
         res.json().then((user) => {
-          console.log('check session')
           setUser(user)
-          console.log(user.username)
         })
       }
     });
@@ -53,8 +47,6 @@ function Home() {
   function handleLogin(user) {
     if (user.username) {
       setUser(user);
-      console.log(user.username);
-      console.log(user.id);
     } else {
       setWarningData("Wrong Username or Password");
       document.getElementById('warning').style.color = 'red';
@@ -69,10 +61,8 @@ function Home() {
   }
 
   function handleRegister(user) {
-    console.log("User registered:", user);
     setUser(user);
     setUsers([...users, user]);
-    console.log("Updated user state:", user);
   }
 
   function handleAddProject(newProject) {

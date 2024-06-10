@@ -64,7 +64,6 @@ def index():
 
 class Projects(Resource):
     def get(self):
-        print('getting projects')
         return make_response(jsonify([project.to_dict() for project in Project.query.all()]))
     
     def post(self):
@@ -73,7 +72,6 @@ class Projects(Resource):
         due_date = data.get('dueDate')
         due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
         user_id = data.get('userId')
-        print(user_id)
         if name:
             project = Project(
                 name=name, 
@@ -90,7 +88,6 @@ class Projects(Resource):
             'due_date': project.due_date,
             'user_id': project.user_id
         }
-            print(project.name)
             return jsonify(project_data)
         else:
             return jsonify({"error": "Name field is required"}), 400
@@ -100,7 +97,6 @@ api.add_resource(Projects, '/projects')
 
 class ProjectID(Resource):
     def get(self, id):
-        print("Received project ID:", id)
         project = Project.query.get(id)
 
         if project:
@@ -112,7 +108,6 @@ class ProjectID(Resource):
                 'due_date': project.due_date,
                 'user_id': project.user_id
             }
-            print(project.name)
             return jsonify(project_data)
         else:
             return jsonify({'error': 'Project not found'}), 404
@@ -121,7 +116,6 @@ api.add_resource(ProjectID, '/projects/<id>')
 
 class Subtasks(Resource):
     def get(self, id):
-        print("Received project ID:", id)
         project = Project.query.get(id)
 
         if project:
@@ -133,7 +127,6 @@ class Subtasks(Resource):
             return jsonify({'error': 'Project not found'}), 404
         
     def post(self, id):
-        print('HI')
         data = request.get_json()
         name = data.get('name')
         project_id = data.get('project_id')
@@ -148,7 +141,6 @@ class Subtasks(Resource):
             'project_id': subtask.project_id,
             'creator_id': subtask.creator_id
         }
-            print(subtask_data)
             return jsonify(subtask_data)
         else:
             return jsonify({"error": "Name field is required"}), 400 
@@ -190,20 +182,15 @@ class SubtaskId(Resource):
             return {"error": "Missing 'completion_status' in request body"}, 400
         
     def delete(self, project_id, subtask_id):
-        print(5)
         project = Project.query.get(project_id)
         subtask = Subtask.query.get(subtask_id)
-        print(subtask.users)
 
-        # Check if both project and subtask exist
         if not project:
             return {"message": "Project not found"}, 404
         if not subtask:
             return {"message": "Subtask not found"}, 404
 
-        # Delete the subtask
         subtask.users.clear()
-        print(subtask.users)
         db.session.commit()
         db.session.delete(subtask)
         db.session.commit()
@@ -239,9 +226,6 @@ class AddUserToSubtask(Resource):
         if not user:
             return {'error': 'User not found'}, 404
         
-        print(subtask.users)
-        print(user)
-        
         if any(sub_user.username == user.username for sub_user in subtask.users):
             return {'message': 'User is already associated with the subtask'}, 200
 
@@ -259,22 +243,18 @@ class Register(Resource):
         position = data['position']
         password = data['password']
 
-        print(username)
-
         if User.query.filter_by(username=username).first() is not None:
             return jsonify({'message': 'Username already exists'}), 400
 
         user = User(username=username, position=position)
         user.password_hash = password
-
-        print(user)
     
         db.session.add(user)
         db.session.commit()
 
         session['user_id'] = user.id
-
-        return jsonify(user.to_dict()), 201
+       
+        return user.to_dict()
     
 api.add_resource(Register, '/register')
 

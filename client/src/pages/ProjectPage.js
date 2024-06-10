@@ -133,14 +133,11 @@ function ProjectPage() {
 
     function openModal(subtask) {
         setModalOpen(true);
-        console.log('open')
         setCurrentSubtask(subtask)
-        console.log(subtask)
     }
     
     function closeModal() {
         setModalOpen(false);
-        console.log('close')
     }
 
     function handleSubtaskCompletion(subtaskId, newCompletionStatus) {
@@ -230,10 +227,8 @@ function ProjectPage() {
 
         const payload = {
             user_id: userToBeAdded,
-            priority: priority // Pass selected priority
+            priority: priority
         };
-
-        console.log(payload)
 
         fetch(`/subtasks/${subtaskId}/add_user`, {
             method: 'POST',
@@ -254,7 +249,6 @@ function ProjectPage() {
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data)
                     setProject(data);
                 })
                 .catch(error => {
