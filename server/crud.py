@@ -29,6 +29,8 @@ def add_subtask(name):
 def get_subtasks():
     return Subtask.query.all()
 
+# love
+
 # class ProjectsWithMinSubtasks(Resource):
 #     def get(self, min_subtasks):
 #         projects = (
