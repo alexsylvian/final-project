@@ -2,6 +2,8 @@ import Home from "./pages/Home"
 import ProjectPage from "./pages/ProjectPage";
 import UsersPage from "./pages/UsersPage"
 import ErrorPage from "./pages/ErrorPage";
+import ProfilePage from "./pages/ProfilePage";
+import CalendarPage from "./pages/CalendarPage";
 
 const routes = [
     {
@@ -19,6 +21,18 @@ const routes = [
     {
       path: "/projects/:id",
       component: ProjectPage,
+      exact: true,
+      errorElement: <ErrorPage />
+    },
+    {
+      path: "/users/:id",
+      component: ProfilePage,
+      exact: true,
+      errorElement: <ErrorPage />
+    },
+    {
+      path: "/calendar",
+      component: CalendarPage,
       exact: true,
       errorElement: <ErrorPage />
     }

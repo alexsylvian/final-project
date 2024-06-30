@@ -1,7 +1,7 @@
 import React from "react";
 import NavBar from "../components/Navbar";
 
-const ErrorPage = ({ errorCode }) => {
+function ErrorPage({ errorCode }) {
   return (
     <div>
         <NavBar />
