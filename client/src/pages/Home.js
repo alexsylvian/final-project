@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import NavBar from "../components/Navbar";
 import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
 import Login from '../components/Login';
 import RegistrationForm from '../components/RegistrationForm';
+import UserContext from '../UserContext';
 
 function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [warningData, setWarningData] = useState('');
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     if (user) {
