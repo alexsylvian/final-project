@@ -2,9 +2,9 @@ import React from "react";
 import NavBar from "../components/Navbar";
 
 function CalendarPage(){
-    pass
+    return(
+        <p>Calendar</p>
+    )
 }
-
-// what
 
 export default CalendarPage;

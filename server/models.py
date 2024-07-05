@@ -113,3 +113,28 @@ class Subtask(db.Model):
                 } for user in self.users
             ]
         }
+    
+# class Comment(db.Model):
+#     __tablename__ = 'comments'
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     content = db.Column(db.String, nullable=False)
+#     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+#     subtask_id = db.Column(db.Integer, db.ForeignKey('subtasks.id'), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+#     subtask = db.relationship('Subtask', back_populates='comments')
+#     user = db.relationship('User', back_populates='comments')
+
+#     def __repr__(self):
+#         return f"Comment(id={self.id}, content={self.content}, created_at={self.created_at}, subtask_id={self.subtask_id}, user_id={self.user_id})"
+    
+#     def to_dict(self):
+#         return {
+#             'id': self.id,
+#             'content': self.content,
+#             'created_at': self.created_at.isoformat(),
+#             'subtask_id': self.subtask_id,
+#             'user_id': self.user_id,
+#             'user': self.user.to_dict() if self.user else None
+#         }
