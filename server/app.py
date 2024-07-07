@@ -374,5 +374,23 @@ class UpdatePassword(Resource):
 # Register the UpdatePassword resource with Flask-Restful
 api.add_resource(UpdatePassword, '/update_password')
 
+class ProjectsByDueDate(Resource):
+    def get(self, year, month, day):
+        try:
+            due_date = datetime(year, month, day)
+        except ValueError:
+            return jsonify({"error": "Invalid date format"}), 400
+
+        projects = Project.query.filter(Project.due_date == due_date).all()
+
+        if not projects:
+            return jsonify({"message": "No projects found for the given due date"}), 404
+
+        project_list = [project.to_dict() for project in projects]
+        return jsonify(project_list)
+
+# Register the resource with the API
+api.add_resource(ProjectsByDueDate, '/projects/due_date/<int:year>/<int:month>/<int:day>')
+
 if __name__ == '__main__':
     app.run(port=5555)
