@@ -323,6 +323,28 @@ class ProjectsWithIncompleteSubtasks(Resource):
 # Register the resource with the API
 api.add_resource(ProjectsWithIncompleteSubtasks, '/projects/with_incomplete_subtasks')
 
+class UpdateUsername(Resource):
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return {'message': '401: Not Authorized'}, 401
+
+        data = request.get_json()
+        new_username = data.get('username')
+
+        if not new_username:
+            return {'message': 'Missing username'}, 400
+
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        user.username = new_username
+        db.session.commit()
+
+        return user.to_dict(), 200
+
+api.add_resource(UpdateUsername, '/update_username')
+
 if __name__ == '__main__':
     app.run(port=5555)
-

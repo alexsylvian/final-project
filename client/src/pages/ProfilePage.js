@@ -4,7 +4,8 @@ import UserContext from '../UserContext';
 
 function ProfilePage() {
   const { user, setUser } = useContext(UserContext);
-  const [newUsername, setNewUsername] = useState(user ? user.username : '');
+  const [newUsername, setNewUsername] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleUsernameChange = (e) => {
     setNewUsername(e.target.value);
@@ -12,7 +13,6 @@ function ProfilePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Assume the backend API endpoint for updating the username is `/update_username`
     fetch('/update_username', {
       method: 'POST',
       headers: {
@@ -20,12 +20,22 @@ function ProfilePage() {
       },
       body: JSON.stringify({ username: newUsername }),
     })
-      .then((response) => response.json())
-      .then((updatedUser) => {
-        // Update the user context with the new username
-        setUser(updatedUser);
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to update username');
+        }
       })
-      .catch((error) => console.error('Error updating username:', error));
+      .then((updatedUser) => {
+        setUser(updatedUser);
+        setNewUsername('')
+        setMessage('Username updated successfully');
+      })
+      .catch((error) => {
+        console.error('Error updating username:', error);
+        setMessage('Failed to update username');
+      });
   };
 
   return (
@@ -45,6 +55,7 @@ function ProfilePage() {
             </label>
             <button type="submit">Update Username</button>
           </form>
+          {message && <p>{message}</p>}
         </div>
       ) : (
         <h1>Loading...</h1>
