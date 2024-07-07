@@ -346,5 +346,33 @@ class UpdateUsername(Resource):
 
 api.add_resource(UpdateUsername, '/update_username')
 
+class UpdatePassword(Resource):
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return {'message': '401: Not Authorized'}, 401
+
+        data = request.get_json()
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+
+        if not old_password or not new_password:
+            return {'message': 'Missing old_password or new_password'}, 400
+
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        if not user.authenticate(old_password):
+            return {'message': 'Invalid current password'}, 400
+
+        user.password_hash = new_password
+        db.session.commit()
+
+        return {'message': 'Password updated successfully'}, 200
+
+# Register the UpdatePassword resource with Flask-Restful
+api.add_resource(UpdatePassword, '/update_password')
+
 if __name__ == '__main__':
     app.run(port=5555)
