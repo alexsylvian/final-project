@@ -36,15 +36,15 @@ function Home() {
       .catch(error => console.error('Error fetching projects:', error));
   }, []);
 
-  useEffect(() => {
-    fetch("/check_session").then((res) => {
-      if (res.ok) {
-        res.json().then((user) => {
-          setUser(user)
-        })
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetch("/check_session").then((res) => {
+  //     if (res.ok) {
+  //       res.json().then((user) => {
+  //         setUser(user)
+  //       })
+  //     }
+  //   });
+  // }, []);
 
   function handleLogin(user) {
     if (user.username) {
