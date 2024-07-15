@@ -16,6 +16,8 @@ function ProjectPage() {
     const [currentSubtask, setCurrentSubtask] = useState("")
     const [userToBeAdded, setUserToBeAdded] = useState(null)
     const [priority, setPriority] = useState("low");
+    const [comments, setComments] = useState({});
+    const [commentInput, setCommentInput] = useState("");
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string()
@@ -54,6 +56,29 @@ function ProjectPage() {
                 setLoading(false);
             });
     }, [id]);
+
+    useEffect(() => {
+        if (project) {
+            project.subtasks.forEach(subtask => {
+                fetch(`/subtasks/${subtask.id}/comments`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch comments');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        setComments(prevComments => ({
+                            ...prevComments,
+                            [subtask.id]: data
+                        }));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching comments:', error);
+                    });
+            });
+        }
+    }, [project]);
 
     function handleNewSubtaskChange(e) {
         formik.setFieldValue("newSubtask", e.target.value);
@@ -279,6 +304,41 @@ function ProjectPage() {
         }
     }
 
+    function handleAddComment(subtaskId) {
+        if (commentInput.trim() !== "") {
+            const newComment = {
+                text: commentInput.trim(),
+                username: user.username,
+                subtask_id: subtaskId,
+                created_at: new Date().toISOString()
+            };
+    
+            fetch(`/subtasks/${subtaskId}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newComment),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add comment');
+                }
+                return response.json();
+            })
+            .then(comment => {
+                setComments(prevComments => ({
+                    ...prevComments,
+                    [subtaskId]: [...(prevComments[subtaskId] || []), comment]
+                }));
+                setCommentInput("");
+            })
+            .catch(error => {
+                console.error('Error adding comment:', error);
+            });
+        }
+    }
+
     return (
         <>
             <NavBar />
@@ -313,6 +373,24 @@ function ProjectPage() {
                                         </li>
                                     ))}
                                 </ul>
+                                <div>
+                                    <h4>Comments</h4>
+                                    <ul>
+                                        {comments[subtask.id] && comments[subtask.id].map(comment => (
+                                            <li key={comment.id}>
+                                                <p>{comment.text}</p>
+                                                <p><i>by {comment.username} on {new Date(comment.created_at).toLocaleString()}</i></p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <input
+                                        type="text"
+                                        value={commentInput}
+                                        onChange={e => setCommentInput(e.target.value)}
+                                        placeholder="Add a comment"
+                                    />
+                                    <button onClick={() => handleAddComment(subtask.id)}>Add Comment</button>
+                                </div>
                                 <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
                             </div>
                             <button onClick={() => openModal(subtask)}>
