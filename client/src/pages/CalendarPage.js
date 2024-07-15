@@ -44,7 +44,7 @@ function CalendarPage() {
                     events={events}
                     startAccessor="start"
                     endAccessor="end"
-                    views={['month', 'week', 'day']}
+                    views={['month']}
                     style={{ margin: '50px' }}
                 />
             </div>
