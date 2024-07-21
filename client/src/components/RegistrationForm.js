@@ -5,6 +5,7 @@ import * as yup from "yup";
 const formSchema = yup.object().shape({
   username: yup.string().required("Username is required"),
   position: yup.string().required("Position is required"),
+  email: yup.string().required("Email is required"),
   password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
   confirmPassword: yup.string().required("Confirm Password is required").oneOf([yup.ref('password'), null], 'Passwords must match')
 });
@@ -26,6 +27,7 @@ function RegistrationForm({ onRegister }) {
     initialValues: {
       username: "",
       position: "",
+      email: "",
       password: "",
       confirmPassword: ""
     },
@@ -84,6 +86,20 @@ function RegistrationForm({ onRegister }) {
           />
           {formik.touched.position && formik.errors.position && (
             <div>{formik.errors.position}</div>
+          )}
+        </div>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.email && formik.errors.email && (
+            <div>{formik.errors.email}</div>
           )}
         </div>
         <div>

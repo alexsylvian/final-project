@@ -21,6 +21,8 @@ function UsersPage(){
                         <tr>
                             <th>ID</th>
                             <th>Username</th>
+                            <th>Position</th>
+                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +31,7 @@ function UsersPage(){
                                 <td>{user.id}</td>
                                 <td>{user.username}</td>
                                 <td>{user.position}</td>
+                                <td>{user.email}</td>
                             </tr>
                         ))}
                     </tbody>

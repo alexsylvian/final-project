@@ -18,6 +18,7 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
+    email = db.Column(db.String, unique=True, nullable=False)
     _password_hash = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     position = db.Column(db.String)
@@ -27,7 +28,7 @@ class User(db.Model, SerializerMixin):
     subtasks = db.relationship("Subtask", secondary=user_subtask_association, back_populates="users")
 
     def __repr__(self):
-        return f"User(id={self.id}, username={self.username}, created_at={self.created_at}, position={self.position})"
+        return f"User(id={self.id}, username={self.username}, email={self.email}, created_at={self.created_at}, position={self.position})"
     
     @hybrid_property
     def password_hash(self):
@@ -48,6 +49,7 @@ class User(db.Model, SerializerMixin):
         return {
             'id': self.id,
             'username': self.username,
+            'email': self.email,
             'created_at': self.created_at.isoformat(),
             'position': self.position
         }

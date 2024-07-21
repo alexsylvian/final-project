@@ -245,11 +245,12 @@ class Register(Resource):
         username = data['username']
         position = data['position']
         password = data['password']
+        email = data['email']
 
         if User.query.filter_by(username=username).first() is not None:
             return jsonify({'message': 'Username already exists'}), 400
 
-        user = User(username=username, position=position)
+        user = User(username=username, position=position, email=email)
         user.password_hash = password
     
         db.session.add(user)
