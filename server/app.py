@@ -13,7 +13,7 @@ from sqlalchemy.sql import func
 from config import app, db, api, bcrypt
 
 # Add your model imports
-from models import User, Project, Subtask, user_subtask_association
+from models import User, Project, Subtask, Comment, user_subtask_association
 
 # Views go here!
 
@@ -122,7 +122,9 @@ class Subtasks(Resource):
         if project:
             subtasks_data = []
             for subtask in project.subtasks:
-                subtasks_data.append(subtask.to_dict())
+                subtask_dict = subtask.to_dict()
+                subtask_dict["comments"] = [comment.to_dict() for comment in subtask.comments]
+                subtasks_data.append(subtask_dict)
             return jsonify(subtasks_data)
         else:
             return jsonify({'error': 'Project not found'}), 404
@@ -391,6 +393,48 @@ class ProjectsByDueDate(Resource):
 
 # Register the resource with the API
 api.add_resource(ProjectsByDueDate, '/projects/due_date/<int:year>/<int:month>/<int:day>')
+
+class CommentResource(Resource):
+    def post(self, subtask_id):
+        data = request.get_json()
+
+        if 'text' not in data or 'username' not in data:
+            return {'error': 'Missing text or username'}, 400
+
+        text = data['text']
+        username = data['username']
+
+        subtask = Subtask.query.get(subtask_id)
+        if not subtask:
+            return {'error': 'Subtask not found'}, 404
+
+        comment = Comment(
+            text=text,
+            username=username,
+            subtask_id=subtask_id
+        )
+
+        db.session.add(comment)
+        db.session.commit()
+
+        return comment.to_dict(), 201
+    
+api.add_resource(CommentResource, '/subtasks/<int:subtask_id>/comments')
+
+@app.route('/comments', methods=['GET'])
+def get_comments():
+    comments = Comment.query.all()
+    return jsonify([comment.to_dict() for comment in comments])
+
+class GetComments(Resource):
+    def get_comments(self, subtask_id):
+        subtask = Subtask.query.get(subtask_id)
+        if not subtask:
+            return jsonify({'error': 'Subtask not found'}), 404
+        comments = Comment.query.filter_by(subtask_id=subtask_id).all()
+        return jsonify([comment.to_dict() for comment in comments])
+    
+api.add_resource(GetComments, '/subtasks/<int:subtask_id>/comments')
 
 if __name__ == '__main__':
     app.run(port=5555)

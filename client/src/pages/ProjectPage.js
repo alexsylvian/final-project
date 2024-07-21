@@ -3,7 +3,7 @@ import NavBar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import "../styles.css";
+// import "../styles.css";
 
 function ProjectPage() {
     const { id } = useParams();
@@ -17,7 +17,8 @@ function ProjectPage() {
     const [userToBeAdded, setUserToBeAdded] = useState(null)
     const [priority, setPriority] = useState("low");
     const [comments, setComments] = useState({});
-    const [commentInput, setCommentInput] = useState("");
+    const [commentInputs, setCommentInputs] = useState({});
+    const [visibleComments, setVisibleComments] = useState({});
 
     const formSchema = yup.object().shape({
         newSubtask: yup.string()
@@ -57,28 +58,28 @@ function ProjectPage() {
             });
     }, [id]);
 
-    useEffect(() => {
-        if (project) {
-            project.subtasks.forEach(subtask => {
-                fetch(`/subtasks/${subtask.id}/comments`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch comments');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        setComments(prevComments => ({
-                            ...prevComments,
-                            [subtask.id]: data
-                        }));
-                    })
-                    .catch(error => {
-                        console.error('Error fetching comments:', error);
-                    });
-            });
-        }
-    }, [project]);
+    // useEffect(() => {
+    //     if (project) {
+    //         project.subtasks.forEach(subtask => {
+    //             fetch(`/subtasks/${subtask.id}/comments`)
+    //                 .then(response => {
+    //                     if (!response.ok) {
+    //                         throw new Error('Failed to fetch comments');
+    //                     }
+    //                     return response.json();
+    //                 })
+    //                 .then(data => {
+    //                     setComments(prevComments => ({
+    //                         ...prevComments,
+    //                         [subtask.id]: data
+    //                     }));
+    //                 })
+    //                 .catch(error => {
+    //                     console.error('Error fetching comments:', error);
+    //                 });
+    //         });
+    //     }
+    // }, [project]);
 
     function handleNewSubtaskChange(e) {
         formik.setFieldValue("newSubtask", e.target.value);
@@ -304,21 +305,26 @@ function ProjectPage() {
         }
     }
 
+    function handleCommentInputChange(subtaskId, value) {
+        setCommentInputs(prevInputs => ({
+            ...prevInputs,
+            [subtaskId]: value
+        }));
+    };
+
     function handleAddComment(subtaskId) {
-        if (commentInput.trim() !== "") {
-            const newComment = {
-                text: commentInput.trim(),
-                username: user.username,
-                subtask_id: subtaskId,
-                created_at: new Date().toISOString()
-            };
+        const commentText = commentInputs[subtaskId] || '';
     
+        if (commentText.trim()) {
             fetch(`/subtasks/${subtaskId}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newComment),
+                body: JSON.stringify({
+                    text: commentText,
+                    username: user.username, // Replace `user.username` with the actual current user data
+                }),
             })
             .then(response => {
                 if (!response.ok) {
@@ -326,18 +332,37 @@ function ProjectPage() {
                 }
                 return response.json();
             })
-            .then(comment => {
-                setComments(prevComments => ({
-                    ...prevComments,
-                    [subtaskId]: [...(prevComments[subtaskId] || []), comment]
-                }));
-                setCommentInput("");
+            .then(newComment => {
+                setProject(prevProject => {
+                    const updatedProject = { ...prevProject };
+                    const updatedSubtasks = updatedProject.subtasks.map(subtask => {
+                        if (subtask.id === subtaskId) {
+                            return {
+                                ...subtask,
+                                comments: [...subtask.comments, newComment]
+                            };
+                        }
+                        return subtask;
+                    });
+                    updatedProject.subtasks = updatedSubtasks;
+                    return updatedProject;
+                });
+                setCommentInputs(''); // Clear input field
             })
             .catch(error => {
                 console.error('Error adding comment:', error);
             });
+        } else {
+            console.warn('Comment text is empty');
         }
-    }
+    };
+    
+    function toggleCommentsVisibility(subtaskId) {
+        setVisibleComments(prevVisibility => ({
+            ...prevVisibility,
+            [subtaskId]: !prevVisibility[subtaskId]
+        }));
+    };
 
     return (
         <>
@@ -374,22 +399,47 @@ function ProjectPage() {
                                     ))}
                                 </ul>
                                 <div>
-                                    <h4>Comments</h4>
-                                    <ul>
-                                        {comments[subtask.id] && comments[subtask.id].map(comment => (
-                                            <li key={comment.id}>
-                                                <p>{comment.text}</p>
-                                                <p><i>by {comment.username} on {new Date(comment.created_at).toLocaleString()}</i></p>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <button onClick={() => toggleCommentsVisibility(subtask.id)}>
+                                        {visibleComments[subtask.id] ? 'Hide Comments' : 'Show Comments'}
+                                    </button>
+
+                                    {visibleComments[subtask.id] && (
+                                        <>
+                                            <h4>Comments</h4>
+                                            <ul>
+                                                {subtask.comments && subtask.comments.map(comment => (
+                                                    <li key={comment.id}>
+                                                        <p>{comment.text}</p>
+                                                        <p><i>by {comment.username} on {new Date(comment.created_at).toLocaleString()}</i></p>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    )}
+
                                     <input
                                         type="text"
-                                        value={commentInput}
-                                        onChange={e => setCommentInput(e.target.value)}
+                                        value={commentInputs[subtask.id] || ''}
+                                        onChange={e => setCommentInputs(prev => ({
+                                            ...prev,
+                                            [subtask.id]: e.target.value
+                                        }))}
                                         placeholder="Add a comment"
                                     />
-                                    <button onClick={() => handleAddComment(subtask.id)}>Add Comment</button>
+                                    <button 
+                                        onClick={() => handleAddComment(subtask.id)}
+                                        style={{
+                                            backgroundColor: '#4CAF50', // Green background
+                                            color: 'white', // White text
+                                            padding: '10px 20px', // Padding
+                                            borderRadius: '5px', // Rounded corners
+                                            border: 'none', // No border
+                                            cursor: 'pointer', // Pointer cursor on hover
+                                            marginTop: '10px' // Margin on top
+                                        }}
+                                    >
+                                        Add Comment
+                                    </button>
                                 </div>
                                 <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
                             </div>
