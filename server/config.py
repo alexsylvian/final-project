@@ -3,6 +3,7 @@
 # Remote library imports
 from flask import Flask
 from flask_cors import CORS
+from flask_mail import Mail, Message
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -22,7 +23,15 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 app.json.compact = False
 app.secret_key = 'BAD_SECRET_KEY'
 
-# Define metadata, instantiate db
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'alexanderflatironproject@gmail.com'
+app.config['MAIL_PASSWORD'] = 'nmer mhjx uuus ugma'
+app.config['MAIL_DEFAULT_SENDER'] = 'alexanderflatironproject@gmail.com'
+
+mail = Mail(app)
+
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })

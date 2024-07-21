@@ -6,11 +6,12 @@
 from flask import request, jsonify, session, make_response
 from flask_restful import Resource
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Message
 from datetime import datetime
 from sqlalchemy.sql import func
 
 # Local imports
-from config import app, db, api, bcrypt
+from config import app, db, api, bcrypt, mail
 
 # Add your model imports
 from models import User, Project, Subtask, Comment, user_subtask_association
@@ -214,28 +215,54 @@ class AddUserToSubtask(Resource):
         user_id = data.get('user_id')
         priority = data.get('priority')
 
+        # Validate priority
         if priority not in ('low', 'medium', 'high', 'severe'):
             return {'error': 'Invalid priority level'}, 400
 
+        # Check if user_id is provided
         if not user_id:
             return {'error': 'User ID is required'}, 400
 
+        # Fetch subtask and user from database
         subtask = Subtask.query.get(subtask_id)
         user = User.query.get(user_id)
 
+        # Check if subtask exists
         if not subtask:
             return {'error': 'Subtask not found'}, 404
-        
+
+        # Check if user exists
         if not user:
             return {'error': 'User not found'}, 404
-        
+
+        # Check if user is already associated with the subtask
         if any(sub_user.username == user.username for sub_user in subtask.users):
             return {'message': 'User is already associated with the subtask'}, 200
 
-        db.session.execute(user_subtask_association.insert().values(user_id=user.id, subtask_id=subtask.id, priority=priority))
-        db.session.commit()
+        try:
+            # Associate user with subtask
+            db.session.execute(user_subtask_association.insert().values(user_id=user.id, subtask_id=subtask.id, priority=priority))
+            db.session.commit()
+
+            # Send an email to the user
+            self.send_email(user.email, subtask.name, priority)
+        except Exception as e:
+            db.session.rollback()
+            return {'error': f'Failed to add user to subtask: {str(e)}'}, 500
 
         return {'message': 'User added to subtask successfully'}, 200
+
+    def send_email(self, email, subtask_name, priority):
+        try:
+            msg = Message(
+                subject="You've been added to a new subtask",
+                recipients=[email],
+                body=f"Hello, you have been added to the subtask: {subtask_name} with priority {priority}."
+            )
+            mail.send(msg)
+            print(f"Email sent to {email} about subtask: {subtask_name} with priority {priority}")
+        except Exception as e:
+            print(f"Failed to send email to {email}: {str(e)}")
 
 api.add_resource(AddUserToSubtask, '/subtasks/<int:subtask_id>/add_user')
 
