@@ -414,32 +414,32 @@ function ProjectPage() {
                                                     </li>
                                                 ))}
                                             </ul>
+
+                                            <input
+                                                type="text"
+                                                value={commentInputs[subtask.id] || ''}
+                                                onChange={e => setCommentInputs(prev => ({
+                                                    ...prev,
+                                                    [subtask.id]: e.target.value
+                                                }))}
+                                                placeholder="Add a comment"
+                                            />
+                                            <button 
+                                                onClick={() => handleAddComment(subtask.id)}
+                                                style={{
+                                                    backgroundColor: '#4CAF50', // Green background
+                                                    color: 'white', // White text
+                                                    padding: '10px 20px', // Padding
+                                                    borderRadius: '5px', // Rounded corners
+                                                    border: 'none', // No border
+                                                    cursor: 'pointer', // Pointer cursor on hover
+                                                    marginTop: '10px' // Margin on top
+                                                }}
+                                            >
+                                                Add Comment
+                                            </button>
                                         </>
                                     )}
-
-                                    <input
-                                        type="text"
-                                        value={commentInputs[subtask.id] || ''}
-                                        onChange={e => setCommentInputs(prev => ({
-                                            ...prev,
-                                            [subtask.id]: e.target.value
-                                        }))}
-                                        placeholder="Add a comment"
-                                    />
-                                    <button 
-                                        onClick={() => handleAddComment(subtask.id)}
-                                        style={{
-                                            backgroundColor: '#4CAF50', // Green background
-                                            color: 'white', // White text
-                                            padding: '10px 20px', // Padding
-                                            borderRadius: '5px', // Rounded corners
-                                            border: 'none', // No border
-                                            cursor: 'pointer', // Pointer cursor on hover
-                                            marginTop: '10px' // Margin on top
-                                        }}
-                                    >
-                                        Add Comment
-                                    </button>
                                 </div>
                                 <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
                             </div>
