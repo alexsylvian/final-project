@@ -5,29 +5,34 @@ import UserContext from '../UserContext';
 function ProfilePage() {
   const { user, setUser } = useContext(UserContext);
   const [newUsername, setNewUsername] = useState('');
+  const [newEmail, setNewEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleUsernameChange = (e) => {
+  function handleUsernameChange(e){
     setNewUsername(e.target.value);
   };
 
-  const handleOldPasswordChange = (e) => {
+  function handleEmailChange(e){
+    setNewEmail(e.target.value);
+  };
+
+  function handleOldPasswordChange(e){
     setOldPassword(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  function handlePasswordChange(e){
     setNewPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e) => {
+  function handleConfirmPasswordChange(e){
     setConfirmPassword(e.target.value);
   };
 
-  const handleUpdateUsername = (e) => {
+  function handleUpdateUsername(e){
     e.preventDefault();
     setIsLoading(true);
 
@@ -57,7 +62,37 @@ function ProfilePage() {
       .finally(() => setIsLoading(false));
   };
 
-  const handleUpdatePassword = (e) => {
+  function handleUpdateEmail(e){
+    e.preventDefault();
+    setIsLoading(true);
+
+    fetch('/update_email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: newEmail }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to update email');
+        }
+      })
+      .then((updatedUser) => {
+        setUser(updatedUser);
+        setNewEmail('');
+        setMessage('Email updated successfully');
+      })
+      .catch((error) => {
+        console.error('Error updating email:', error);
+        setMessage('Failed to update email');
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  function handleUpdatePassword(e){
     e.preventDefault();
     setIsLoading(true);
 
@@ -112,6 +147,19 @@ function ProfilePage() {
             </label>
             <br />
             <button type="submit">Update Username</button>
+          </form>
+          <br />
+          <form onSubmit={handleUpdateEmail}>
+            <label>
+              New Email:
+              <input
+                type="text"
+                value={newEmail}
+                onChange={handleEmailChange}
+              />
+            </label>
+            <br />
+            <button type="submit">Update Email</button>
           </form>
           <br />
           <form onSubmit={handleUpdatePassword}>

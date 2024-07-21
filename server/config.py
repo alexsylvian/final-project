@@ -16,8 +16,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_size': 10,       
-    'max_overflow': 20,   
+    'pool_size': 10,
+    'max_overflow': 20,
 }
 app.json.compact = False
 app.secret_key = 'BAD_SECRET_KEY'

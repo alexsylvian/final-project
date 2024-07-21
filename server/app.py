@@ -349,6 +349,29 @@ class UpdateUsername(Resource):
 
 api.add_resource(UpdateUsername, '/update_username')
 
+class UpdateEmail(Resource):
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return {'message': '401: Not Authorized'}, 401
+
+        data = request.get_json()
+        new_email = data.get('email')
+
+        if not new_email:
+            return {'message': 'Missing email'}, 400
+
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        user.email = new_email
+        db.session.commit()
+
+        return user.to_dict(), 200
+
+api.add_resource(UpdateEmail, '/update_email')
+
 class UpdatePassword(Resource):
     def post(self):
         user_id = session.get('user_id')
