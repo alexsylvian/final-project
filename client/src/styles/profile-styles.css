@@ -1,0 +1,58 @@
+/* Styles for ProfilePage */
+
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #f7fafc; /* Background color */
+    min-height: 100vh;
+  }
+  
+  .profileHeader {
+    font-size: 2rem; /* Font size for the header */
+    font-weight: bold; /* Font weight for the header */
+    margin-bottom: 2rem; /* Margin below the header */
+  }
+  
+  .formContainer {
+    width: 100%;
+    max-width: 600px; /* Maximum width for the forms */
+  }
+  
+  .formGroup {
+    margin-bottom: 1.5rem; /* Space between form elements */
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem; /* Space below the label */
+    font-weight: 500; /* Font weight for labels */
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.5rem; /* Padding inside the input */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners for input */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+  }
+  
+  button {
+    padding: 0.5rem 1rem; /* Padding inside the button */
+    background-color: #4a90e2; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none;
+    border-radius: 4px; /* Rounded corners for button */
+    cursor: pointer; /* Cursor style on hover */
+    font-size: 1rem; /* Font size for button text */
+  }
+  
+  button:hover {
+    background-color: #357abd; /* Darker color on hover */
+  }
+  
+  .message {
+    margin-top: 1rem;
+    color: #d9534f; /* Error message color */
+  }
