@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { NavLink } from "react-router-dom";
-import UserContext from "./UserContext";
-import "../Navbar.css";
+import { NavLink } from 'react-router-dom';
+import UserContext from './UserContext';
+import '../styles/navbarStyles.css';
 
 function NavBar({ onLogout }) {
   const { user, setUser } = useContext(UserContext);
@@ -15,6 +15,13 @@ function NavBar({ onLogout }) {
     });
   }
 
+  const isActive = (match, location) => {
+    if (!match) {
+      return false;
+    }
+    return match.isExact;
+  };
+
   return (
     <>
       <header>
@@ -24,6 +31,7 @@ function NavBar({ onLogout }) {
         <NavLink
           to="/"
           className="navbar-link"
+          isActive={(match, location) => location.pathname === "/"}
           activeClassName="active"
           exact
           onClick={() => console.log("Home link clicked")}
@@ -34,6 +42,7 @@ function NavBar({ onLogout }) {
           <NavLink
             to={`/users/${user.id}`}
             className="navbar-link"
+            isActive={(match, location) => location.pathname === `/users/${user.id}`}
             activeClassName="active"
             onClick={() => console.log("Profile link clicked")}
           >
@@ -43,6 +52,7 @@ function NavBar({ onLogout }) {
         <NavLink
           to="/users"
           className="navbar-link"
+          isActive={(match, location) => location.pathname.startsWith("/users") && !location.pathname.includes(`/users/${user?.id}`)}
           activeClassName="active"
           onClick={() => console.log("User List link clicked")}
         >
@@ -51,6 +61,7 @@ function NavBar({ onLogout }) {
         <NavLink
           to="/calendar"
           className="navbar-link"
+          isActive={(match, location) => location.pathname === "/calendar"}
           activeClassName="active"
           onClick={() => console.log("Calendar link clicked")}
         >

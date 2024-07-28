@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import NavBar from '../components/Navbar';
 import UserContext from '../components/UserContext';
+import '../styles/profile-styles.css'; // Import your CSS file
 
 function ProfilePage() {
   const { user, setUser } = useContext(UserContext);
@@ -12,27 +13,27 @@ function ProfilePage() {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleUsernameChange(e){
+  function handleUsernameChange(e) {
     setNewUsername(e.target.value);
-  };
+  }
 
-  function handleEmailChange(e){
+  function handleEmailChange(e) {
     setNewEmail(e.target.value);
-  };
+  }
 
-  function handleOldPasswordChange(e){
+  function handleOldPasswordChange(e) {
     setOldPassword(e.target.value);
-  };
+  }
 
-  function handlePasswordChange(e){
+  function handlePasswordChange(e) {
     setNewPassword(e.target.value);
-  };
+  }
 
-  function handleConfirmPasswordChange(e){
+  function handleConfirmPasswordChange(e) {
     setConfirmPassword(e.target.value);
-  };
+  }
 
-  function handleUpdateUsername(e){
+  function handleUpdateUsername(e) {
     e.preventDefault();
     setIsLoading(true);
 
@@ -60,9 +61,9 @@ function ProfilePage() {
         setMessage('Failed to update username');
       })
       .finally(() => setIsLoading(false));
-  };
+  }
 
-  function handleUpdateEmail(e){
+  function handleUpdateEmail(e) {
     e.preventDefault();
     setIsLoading(true);
 
@@ -90,9 +91,9 @@ function ProfilePage() {
         setMessage('Failed to update email');
       })
       .finally(() => setIsLoading(false));
-  };
+  }
 
-  function handleUpdatePassword(e){
+  function handleUpdatePassword(e) {
     e.preventDefault();
     setIsLoading(true);
 
@@ -128,76 +129,73 @@ function ProfilePage() {
         setMessage('Failed to update password');
       })
       .finally(() => setIsLoading(false));
-  };
+  }
 
   return (
-    <div>
-      <NavBar />
+    <>
+    <NavBar />
+    <div className="profileContainer">
       {user ? (
         <div>
-          <h1>Hello, {user.username}</h1>
-          <form onSubmit={handleUpdateUsername}>
-            <label>
-              New Username:
-              <input
-                type="text"
-                value={newUsername}
-                onChange={handleUsernameChange}
-              />
-            </label>
-            <br />
-            <button type="submit">Update Username</button>
-          </form>
-          <br />
-          <form onSubmit={handleUpdateEmail}>
-            <label>
-              New Email:
-              <input
-                type="text"
-                value={newEmail}
-                onChange={handleEmailChange}
-              />
-            </label>
-            <br />
-            <button type="submit">Update Email</button>
-          </form>
-          <br />
-          <form onSubmit={handleUpdatePassword}>
-            <label>
-              Old Password:
-              <input
-                type="password"
-                value={oldPassword}
-                onChange={handleOldPasswordChange}
-              />
-            </label>
-            <br />
-            <label>
-              New Password:
-              <input
-                type="password"
-                value={newPassword}
-                onChange={handlePasswordChange}
-              />
-            </label>
-            <br />
-            <label>
-              Confirm New Password:
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
-              />
-            </label>
-            <br />
-            <button type="submit">Update Password</button>
-          </form>
-          {message && <p>{message}</p>}
+          <h1 className="profileHeader">Hello, {user.username}</h1>
+          <div className="formContainer">
+            <form onSubmit={handleUpdateUsername} className="formGroup">
+              <label>
+                New Username:
+                <input
+                  type="text"
+                  value={newUsername}
+                  onChange={handleUsernameChange}
+                />
+              </label>
+              <button type="submit">Update Username</button>
+            </form>
+            <form onSubmit={handleUpdateEmail} className="formGroup">
+              <label>
+                New Email:
+                <input
+                  type="text"
+                  value={newEmail}
+                  onChange={handleEmailChange}
+                />
+              </label>
+              <button type="submit">Update Email</button>
+            </form>
+            <form onSubmit={handleUpdatePassword} className="formGroup">
+              <label>
+                Old Password:
+                <input
+                  type="password"
+                  value={oldPassword}
+                  onChange={handleOldPasswordChange}
+                />
+              </label>
+              <label>
+                New Password:
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={handlePasswordChange}
+                />
+              </label>
+              <label>
+                Confirm New Password:
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                />
+              </label>
+              <button type="submit">Update Password</button>
+            </form>
+            {message && <p className="message">{message}</p>}
+          </div>
         </div>
       ) : (
         <h1>Loading...</h1>
       )}
     </div>
+    </>
   );
 }
 

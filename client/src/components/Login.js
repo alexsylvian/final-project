@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import UserContext from "./UserContext";
+import '../styles/loginStyles.css'; // Import your CSS file
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -35,20 +36,24 @@ function Login() {
 
   return (
     <form onSubmit={handleSubmit}>
+      <label htmlFor="username">Username:</label>
       <input
+        id="username"
         type="text"
         value={username}
         placeholder="Username"
         onChange={(e) => setUsername(e.target.value)}
       />
+      <label htmlFor="password">Password:</label>
       <input
+        id="password"
         type="password"
         value={password}
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
       />
       <button type="submit">Login</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p>{error}</p>}
     </form>
   );
 }

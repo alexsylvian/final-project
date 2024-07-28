@@ -1,6 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import '../styles/projectFormStyles.css'; // Import your CSS file
 
 const ProjectForm = ({ addProject, userIdForProjects }) => {
   const formSchema = yup.object().shape({
@@ -8,7 +9,6 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
     dueDate: yup.date().required("Due date is required"),
   });
 
-  
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -18,7 +18,7 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
     validationSchema: formSchema,
     onSubmit: (values) => {
       console.log("Form Values:", values);
-      
+
       fetch("http://localhost:5555/projects", {
         method: "POST",
         headers: {
@@ -45,19 +45,18 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
+      <form onSubmit={formik.handleSubmit} className="project-form">
         <label htmlFor="name">Project Name</label>
-        <br />
         <input
           id="name"
           name="name"
+          type="text"
           onChange={formik.handleChange}
           value={formik.values.name}
         />
-        <p style={{ color: "red" }}> {formik.errors.name}</p>
+        {formik.errors.name && <p className="error-message">{formik.errors.name}</p>}
 
         <label htmlFor="dueDate">Due Date</label>
-        <br />
         <input
           id="dueDate"
           name="dueDate"
@@ -65,7 +64,8 @@ const ProjectForm = ({ addProject, userIdForProjects }) => {
           onChange={formik.handleChange}
           value={formik.values.dueDate}
         />
-        <p style={{ color: "red" }}> {formik.errors.dueDate}</p>
+        {formik.errors.dueDate && <p className="error-message">{formik.errors.dueDate}</p>}
+        
         <button type="submit">Add Project</button>
       </form>
     </div>
