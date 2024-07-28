@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+// import { Typography } from "@mui/material";
 import NavBar from "../components/Navbar";
 
 function UsersPage(){
@@ -15,7 +16,9 @@ function UsersPage(){
         <>
             <NavBar />
             <div>
-                <h1>Users</h1>
+                {/* <Typography variant="h4" gutterBottom> */}
+                    <h1>Users</h1>
+                {/* </Typography> */}
                 <table>
                     <thead>
                         <tr>

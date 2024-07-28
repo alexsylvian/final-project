@@ -3,7 +3,7 @@ import NavBar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-// import "../styles.css";
+import "../styles.css";
 
 function ProjectPage() {
     const { id } = useParams();
@@ -16,7 +16,6 @@ function ProjectPage() {
     const [currentSubtask, setCurrentSubtask] = useState("")
     const [userToBeAdded, setUserToBeAdded] = useState(null)
     const [priority, setPriority] = useState("low");
-    const [comments, setComments] = useState({});
     const [commentInputs, setCommentInputs] = useState({});
     const [visibleComments, setVisibleComments] = useState({});
 

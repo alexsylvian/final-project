@@ -35,6 +35,11 @@ const routes = [
       component: CalendarPage,
       exact: true,
       errorElement: <ErrorPage />
+    },
+    {
+      path: "*",
+      component: ErrorPage,
+      exact: false
     }
 ]
 

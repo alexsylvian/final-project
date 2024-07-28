@@ -260,7 +260,7 @@ class AddUserToSubtask(Resource):
                 body=f"Hello, you have been added to the subtask: {subtask_name} with priority {priority}."
             )
             mail.send(msg)
-            print(f"Email sent to {email} about subtask: {subtask_name} with priority {priority}")
+            print(f"Email sent to {email} about subtask: {subtask_name} with {priority} priority.")
         except Exception as e:
             print(f"Failed to send email to {email}: {str(e)}")
 

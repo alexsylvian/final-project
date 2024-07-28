@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import NavBar from '../components/Navbar';
-import UserContext from '../UserContext';
+import UserContext from '../components/UserContext';
 
 function ProfilePage() {
   const { user, setUser } = useContext(UserContext);

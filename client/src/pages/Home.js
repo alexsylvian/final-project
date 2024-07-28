@@ -4,7 +4,7 @@ import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
 import Login from '../components/Login';
 import RegistrationForm from '../components/RegistrationForm';
-import UserContext from '../UserContext';
+import UserContext from '../components/UserContext';
 
 function Home() {
   const [projects, setProjects] = useState([]);
