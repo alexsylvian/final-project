@@ -6,10 +6,11 @@ import Login from '../components/Login';
 import RegistrationForm from '../components/RegistrationForm';
 import UserContext from '../components/UserContext';
 
+import '../styles/projectCardStyles.css';
+
 function Home() {
   const [projects, setProjects] = useState([]);
   const [searchedProjects, setSearchedProjects] = useState('');
-  // const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [warningData, setWarningData] = useState('');
   const { user, setUser } = useContext(UserContext);
@@ -121,7 +122,7 @@ function Home() {
               key={project.id}
               title={project.name}
               id={project.id}
-              subtasks={project.subtasks.map((subtask) => subtask)}
+              subtasks={project.subtasks}
               createdAt={project.created_at}
               dueDate={project.due_date}
               completed={project.completed}
