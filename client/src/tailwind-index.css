@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container {
+  @apply min-h-screen bg-gray-100 flex flex-col items-center justify-center;
+}
+
+.heading {
+  @apply text-4xl font-bold text-red-600;
+}
+
+.message {
+  @apply mt-4 text-lg text-gray-700;
+}

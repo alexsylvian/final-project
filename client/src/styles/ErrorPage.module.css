@@ -1,0 +1,28 @@
+body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  
+  /* Container styles */
+  .container {
+    min-height: 100vh; /* Equivalent to Tailwind's min-h-screen */
+    background-color: #f7fafc; /* Equivalent to Tailwind's bg-gray-100 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Heading styles */
+  .heading {
+    font-size: 2.25rem; /* Equivalent to Tailwind's text-4xl */
+    font-weight: 700; /* Equivalent to Tailwind's font-bold */
+    color: #e53e3e; /* Equivalent to Tailwind's text-red-600 */
+  }
+  
+  /* Message styles */
+  .message {
+    margin-top: 1rem; /* Equivalent to Tailwind's mt-4 */
+    font-size: 1.125rem; /* Equivalent to Tailwind's text-lg */
+    color: #4a5568; /* Equivalent to Tailwind's text-gray-700 */
+  }
