@@ -1,21 +1,21 @@
-/* Styles for the Login component */
+/* Styles for ProjectForm component */
 
-form {
-    max-width: 400px; /* Set a max-width for the form */
-    margin: 0 auto; /* Center the form horizontally */
-    padding: 1rem; /* Padding inside the form */
+.project-form {
+    margin: 30px auto; /* Center the form horizontally */
+    max-width: 800px; /* Increased maximum width for the form */
+    padding: 20px; /* Padding inside the form */
     background-color: #f9f9f9; /* Light background color */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   }
   
-  label {
+  .project-form label {
     display: block; /* Make labels block elements */
     margin-bottom: 0.5rem; /* Space between label and input */
     font-weight: bold; /* Make labels bold */
   }
   
-  input {
+  .project-form input {
     width: 100%; /* Full width inputs */
     padding: 0.75rem; /* Padding inside inputs */
     margin-bottom: 1rem; /* Margin between inputs */
@@ -24,23 +24,23 @@ form {
     font-size: 1rem; /* Font size for inputs */
   }
   
-  button {
+  .project-form button {
     width: 100%; /* Full width button */
     padding: 0.75rem; /* Padding inside the button */
     border: none; /* Remove default border */
     border-radius: 4px; /* Rounded corners */
     background-color: #007bff; /* Primary color background */
-    color: #fff; /* White text color */
+    color: #f7fafc; /* White text color */
     font-size: 1rem; /* Font size for button text */
     cursor: pointer; /* Cursor style on hover */
   }
   
-  button:hover {
+  .project-form button:hover {
     background-color: #0056b3; /* Darker blue on hover */
   }
   
-  p {
+  .error-message {
     color: red; /* Red color for error messages */
-    margin-top: 1rem; /* Margin above error messages */
+    margin-top: 0.5rem; /* Margin above error messages */
   }
   
