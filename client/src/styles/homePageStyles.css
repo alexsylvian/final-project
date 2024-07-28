@@ -1,0 +1,87 @@
+/* Container for ProjectCards */
+.project-cards {
+    display: flex; /* Use flexbox for horizontal layout */
+    flex-wrap: wrap; /* Allow wrapping to the next line */
+    gap: 20px; /* Space between cards */
+    justify-content: center; /* Center the cards horizontally */
+    padding: 20px; /* Add padding around the container */
+  }
+  
+  /* Make sure each ProjectCard is styled appropriately */
+  .project-card {
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the card */
+    background-color: #ffffff; /* White background for the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+    max-width: 300px; /* Maximum width of the card */
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition */
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px); /* Slightly lift the card on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  }
+  
+  .project-card h2 {
+    font-size: 1.4rem; /* Font size for the title */
+    margin-bottom: 10px; /* Space below the title */
+    color: #333; /* Dark gray text */
+  }
+  
+  .project-card p {
+    margin: 5px 0; /* Margin for createdAt */
+    color: #666; /* Medium gray text */
+  }
+  
+  .project-card ul {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+  }
+  
+  .project-card li {
+    margin-bottom: 5px; /* Space between subtasks */
+    color: #444; /* Darker gray text for subtasks */
+  }
+  
+  .project-card button {
+    padding: 10px 15px; /* Padding inside the button */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #007bff; /* Blue background */
+    color: #fff; /* White text */
+    font-size: 1rem; /* Font size for button text */
+    cursor: pointer; /* Pointer cursor on hover */
+    margin-top: 10px; /* Margin above the button */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .project-card button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .project-card h5 {
+    margin: 10px 0; /* Margin for due date and completion status */
+    font-size: 1rem; /* Font size */
+  }
+  
+  .project-card.completed h5 {
+    color: #28a745; /* Green color for completed projects */
+  }
+  
+  .project-card.incomplete h5 {
+    color: #dc3545; /* Red color for incomplete projects */
+  }
+  
+  .project-card a {
+    text-decoration: none; /* Remove underline from links */
+    color: #007bff; /* Blue color for links */
+    font-weight: bold; /* Bold text for emphasis */
+    display: inline-block; /* Inline-block for padding */
+    margin-top: 10px; /* Margin above the link */
+  }
+  
+  .project-card a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }  
