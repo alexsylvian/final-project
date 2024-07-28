@@ -1,0 +1,44 @@
+/* Styles for NavBar */
+
+header {
+    background-color: #333; /* Dark background for the header */
+    padding: 1rem; /* Padding around the header */
+    display: flex;
+    justify-content: flex-end; /* Align the logout button to the right */
+  }
+  
+  button {
+    color: #fff; /* White text color */
+    background-color: #e74c3c; /* Red background color */
+    border: none;
+    padding: 0.5rem 1rem; /* Padding inside the button */
+    border-radius: 4px; /* Rounded corners for the button */
+    cursor: pointer; /* Cursor style on hover */
+    font-size: 1rem; /* Font size for button text */
+  }
+  
+  button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+  }
+  
+  nav {
+    background-color: #444; /* Dark background for the nav */
+    padding: 0.5rem 1rem; /* Padding around the nav items */
+    display: flex;
+    gap: 1rem; /* Space between nav items */
+  }
+  
+  .navbar-link {
+    color: #fff; /* White text color */
+    text-decoration: none; /* Remove underline from links */
+    font-size: 1rem; /* Font size for links */
+  }
+  
+  .navbar-link.active {
+    font-weight: bold; /* Bold text for the active link */
+    border-bottom: 2px solid #e74c3c; /* Red underline for active link */
+  }
+  
+  .navbar-link:hover {
+    color: #e74c3c; /* Red color on hover */
+  }
