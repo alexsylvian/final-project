@@ -1,6 +1,6 @@
 import React from "react";
 import NavBar from "../components/Navbar";
-import styles from '../styles/ErrorPage.module.css'; // Import the CSS module
+import styles from '../styles/ErrorPage.module.css'; // Import the scoped CSS module
 
 function ErrorPage({ errorCode }) {
   return (

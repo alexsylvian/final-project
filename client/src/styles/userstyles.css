@@ -1,0 +1,43 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the top */
+    min-height: 100vh;
+    background-color: #f7fafc; /* Equivalent to Tailwind's bg-gray-50 */
+    padding-top: 2rem; /* Add padding to the top if needed */
+  }
+  
+  
+  .tableContainer {
+    width: 100%;
+    max-width: 60rem; /* Equivalent to Tailwind's max-w-4xl */
+    margin-top: 2rem;
+  }
+  
+  .heading {
+    font-size: 2.25rem; /* Equivalent to Tailwind's text-4xl */
+    font-weight: 700; /* Equivalent to Tailwind's font-bold */
+    text-align: center;
+    margin-bottom: 1rem; /* Equivalent to Tailwind's mb-4 */
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff; /* Equivalent to Tailwind's bg-white */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Equivalent to Tailwind's shadow-md */
+  }
+  
+  .tableHeader {
+    background-color: #edf2f7; /* Equivalent to Tailwind's bg-gray-200 */
+  }
+  
+  .tableRow {
+    border-bottom: 1px solid #e2e8f0; /* Equivalent to Tailwind's border-b */
+  }
+  
+  .tableCell {
+    padding: 1rem; /* Equivalent to Tailwind's p-4 */
+    text-align: left;
+  }
