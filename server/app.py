@@ -257,7 +257,7 @@ class AddUserToSubtask(Resource):
             msg = Message(
                 subject="You've been added to a new subtask",
                 recipients=[email],
-                body=f"Hello, you have been added to the subtask: {subtask_name} with priority {priority}."
+                body=f"Hello, you have been added to the subtask: {subtask_name} with {priority} priority."
             )
             mail.send(msg)
             print(f"Email sent to {email} about subtask: {subtask_name} with {priority} priority.")
