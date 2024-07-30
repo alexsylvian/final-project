@@ -1,7 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import '../styles/projectFormStyles.css'; // Import your CSS file
+import '../styles/projectFormStyles.css';
 
 const ProjectForm = ({ addProject, userIdForProjects }) => {
   const formSchema = yup.object().shape({

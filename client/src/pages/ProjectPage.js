@@ -3,7 +3,8 @@ import NavBar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import "../styles.css";
+
+import '../styles/projectPageStyles.css';
 
 function ProjectPage() {
     const { id } = useParams();
@@ -366,110 +367,99 @@ function ProjectPage() {
     return (
         <>
             <NavBar />
-            <div>
+            <div className="project-page">
                 <h1>Project Details</h1>
                 {loading ? (
                     <p>Loading...</p>
                 ) : project ? (
                     <>
-                    <div>
-                        <h2>{project.name}</h2>
-                        <p>Created {project.created_at}</p>
-                        <ul>
-                        {project.subtasks.map(subtask => (
-                            <div key={subtask.id} className="subtask-container">
-                            <div className="subtask">
-                                <h3>{subtask.name}</h3>
-                                <p>Mark Complete/Incomplete:</p>
-                                <input
-                                    type="checkbox"
-                                    checked={subtask.completion_status}
-                                    onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
-                                />
-                                <p className="bold-text">Users Responsible for this Subtask:</p>
-                                <ul>
-                                    {subtask.users_attached.map(attachedUser => (
-                                        <li key={attachedUser.user.id}>
-                                            {attachedUser.user.username} - Priority: 
-                                            <span style={{ color: getColorForPriority(attachedUser.priority) }}>
-                                                {attachedUser.priority.toUpperCase()}
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div>
-                                    <button onClick={() => toggleCommentsVisibility(subtask.id)}>
-                                        {visibleComments[subtask.id] ? 'Hide Comments' : 'Show Comments'}
-                                    </button>
-
-                                    {visibleComments[subtask.id] && (
-                                        <>
-                                            <h4>Comments</h4>
-                                            <ul>
-                                                {subtask.comments && subtask.comments.map(comment => (
-                                                    <li key={comment.id}>
-                                                        <p>{comment.text}</p>
-                                                        <p><i>by {comment.username} on {new Date(comment.created_at).toLocaleString()}</i></p>
+                        <div className="project-details">
+                            <h2>{project.name}</h2>
+                            <p>Created on {project.created_at}</p>
+                            <ul className="subtasks-list">
+                                {project.subtasks.map(subtask => (
+                                    <div key={subtask.id} className="subtask-container">
+                                        <div className="subtask">
+                                            <h3>{subtask.name}</h3>
+                                            <p>Mark Complete/Incomplete:</p>
+                                            <input
+                                                type="checkbox"
+                                                checked={subtask.completion_status}
+                                                onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
+                                            />
+                                            <p className="bold-text">Users Responsible for this Subtask:</p>
+                                            <ul className="attached-users">
+                                                {subtask.users_attached.map(attachedUser => (
+                                                    <li key={attachedUser.user.id}>
+                                                        {attachedUser.user.username} - Priority: 
+                                                        <span className={`priority-${attachedUser.priority}`}>
+                                                            {attachedUser.priority.toUpperCase()}
+                                                        </span>
                                                     </li>
                                                 ))}
                                             </ul>
-
-                                            <input
-                                                type="text"
-                                                value={commentInputs[subtask.id] || ''}
-                                                onChange={e => setCommentInputs(prev => ({
-                                                    ...prev,
-                                                    [subtask.id]: e.target.value
-                                                }))}
-                                                placeholder="Add a comment"
-                                            />
-                                            <button 
-                                                onClick={() => handleAddComment(subtask.id)}
-                                                style={{
-                                                    backgroundColor: '#4CAF50', // Green background
-                                                    color: 'white', // White text
-                                                    padding: '10px 20px', // Padding
-                                                    borderRadius: '5px', // Rounded corners
-                                                    border: 'none', // No border
-                                                    cursor: 'pointer', // Pointer cursor on hover
-                                                    marginTop: '10px' // Margin on top
-                                                }}
-                                            >
-                                                Add Comment
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                                <button onClick={() => handleDeleteSubtask(subtask.id)}>❌</button>
-                            </div>
-                            <button onClick={() => openModal(subtask)}>
-                                {modalOpen ? "-" : "+"}
-                            </button>
+                                            <div className="comment-section">
+                                                <button onClick={() => toggleCommentsVisibility(subtask.id)}>
+                                                    {visibleComments[subtask.id] ? 'Hide Comments' : 'Show Comments'}
+                                                </button>
+    
+                                                {visibleComments[subtask.id] && (
+                                                    <>
+                                                        <h4>Comments</h4>
+                                                        <ul>
+                                                            {subtask.comments && subtask.comments.map(comment => (
+                                                                <li key={comment.id}>
+                                                                    <p>{comment.text}</p>
+                                                                    <p><i>by {comment.username} on {new Date(comment.created_at).toLocaleString()}</i></p>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+    
+                                                        <input
+                                                            type="text"
+                                                            value={commentInputs[subtask.id] || ''}
+                                                            onChange={e => setCommentInputs(prev => ({
+                                                                ...prev,
+                                                                [subtask.id]: e.target.value
+                                                            }))}
+                                                            placeholder="Add a comment"
+                                                        />
+                                                        <button onClick={() => handleAddComment(subtask.id)} className="add-comment-button">
+                                                            Add Comment
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <button onClick={() => handleDeleteSubtask(subtask.id)} className="delete-subtask-button">❌</button>
+                                        </div>
+                                        <button onClick={() => openModal(subtask)} className="assign-user-button">
+                                            {modalOpen ? "-" : "+"}
+                                        </button>
+                                    </div>
+                                ))}
+                            </ul>
+                            <h5>Due: {project.due_date}</h5>
+                            <form onSubmit={formik.handleSubmit} className="add-subtask-form">
+                                <input
+                                    type="text"
+                                    id="newSubtask"
+                                    name="newSubtask"
+                                    value={formik.values.newSubtask}
+                                    onChange={handleNewSubtaskChange}
+                                    placeholder="Enter new subtask"
+                                />
+                                {formik.errors.newSubtask && formik.touched.newSubtask && (
+                                    <p className="error-text">{formik.errors.newSubtask}</p>
+                                )}
+                                <button type="submit">Add Subtask</button>
+                            </form>
                         </div>
-                        ))}
-                        </ul>
-                        <h5>Due: {project.due_date}</h5>
-                        <form onSubmit={formik.handleSubmit}>
-                            <input
-                                type="text"
-                                id="newSubtask"
-                                name="newSubtask"
-                                value={formik.values.newSubtask}
-                                onChange={handleNewSubtaskChange}
-                                placeholder="Enter new subtask"
-                            />
-                            {formik.errors.newSubtask && formik.touched.newSubtask && (
-                                <p style={{ color: "red" }}>{formik.errors.newSubtask}</p>
-                            )}
-                            <button type="submit">Add Subtask</button>
-                        </form>
-                    </div>
-
-                    <div className={modalOpen ? "modal-open" : "modal"}>
-                        <div className="modal-content">
-                            <span className="close" onClick={closeModal}>&times;</span>
-                                <div>
-                                    Please select user to add to the {currentSubtask.name} subtask. 
+    
+                        <div className={modalOpen ? "modal-open" : "modal"}>
+                            <div className="modal-content">
+                                <span className="close" onClick={closeModal}>&times;</span>
+                                <div className="modal-body">
+                                    <p>Please select user to add to the {currentSubtask.name} subtask.</p>
                                     <ul>
                                         <li>
                                             Add User: 
@@ -501,6 +491,6 @@ function ProjectPage() {
             </div>
         </>
     );
-}
+}    
 
 export default ProjectPage;

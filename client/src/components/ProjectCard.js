@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import '../styles/projectCardStyles.css'; // Import the CSS file
+import '../styles/projectCardStyles.css';
 
 function ProjectCard({ title, id, subtasks, createdAt, dueDate, completed }) {
     const [showSubtasks, setShowSubtasks] = useState(false);
