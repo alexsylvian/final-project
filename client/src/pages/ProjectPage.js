@@ -58,29 +58,6 @@ function ProjectPage() {
             });
     }, [id]);
 
-    // useEffect(() => {
-    //     if (project) {
-    //         project.subtasks.forEach(subtask => {
-    //             fetch(`/subtasks/${subtask.id}/comments`)
-    //                 .then(response => {
-    //                     if (!response.ok) {
-    //                         throw new Error('Failed to fetch comments');
-    //                     }
-    //                     return response.json();
-    //                 })
-    //                 .then(data => {
-    //                     setComments(prevComments => ({
-    //                         ...prevComments,
-    //                         [subtask.id]: data
-    //                     }));
-    //                 })
-    //                 .catch(error => {
-    //                     console.error('Error fetching comments:', error);
-    //                 });
-    //         });
-    //     }
-    // }, [project]);
-
     function handleNewSubtaskChange(e) {
         formik.setFieldValue("newSubtask", e.target.value);
     }
@@ -290,28 +267,6 @@ function ProjectPage() {
         setPriority(e.target.value);
     }
 
-    function getColorForPriority(priority) {
-        switch (priority) {
-            case 'low':
-                return 'green';
-            case 'medium':
-                return 'blue';
-            case 'high':
-                return 'orange';
-            case 'severe':
-                return 'red';
-            default:
-                return 'black';
-        }
-    }
-
-    function handleCommentInputChange(subtaskId, value) {
-        setCommentInputs(prevInputs => ({
-            ...prevInputs,
-            [subtaskId]: value
-        }));
-    };
-
     function handleAddComment(subtaskId) {
         const commentText = commentInputs[subtaskId] || '';
     
@@ -378,15 +333,9 @@ function ProjectPage() {
                             <p>Created on {project.created_at}</p>
                             <ul className="subtasks-list">
                                 {project.subtasks.map(subtask => (
-                                    <div key={subtask.id} className="subtask-container">
+                                    <div key={subtask.id} className={`subtask-container ${subtask.completion_status ? 'faded' : ''}`}>
                                         <div className="subtask">
                                             <h3>{subtask.name}</h3>
-                                            <p>Mark Complete/Incomplete:</p>
-                                            <input
-                                                type="checkbox"
-                                                checked={subtask.completion_status}
-                                                onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
-                                            />
                                             <p className="bold-text">Users Responsible for this Subtask:</p>
                                             <ul className="attached-users">
                                                 {subtask.users_attached.map(attachedUser => (
@@ -430,11 +379,20 @@ function ProjectPage() {
                                                     </>
                                                 )}
                                             </div>
+                                            
                                             <button onClick={() => handleDeleteSubtask(subtask.id)} className="delete-subtask-button">❌</button>
                                         </div>
                                         <button onClick={() => openModal(subtask)} className="assign-user-button">
-                                            {modalOpen ? "-" : "+"}
+                                            {modalOpen ? "-" : "Add User"}
                                         </button>
+                                        <div className="mark-complete">
+                                            <p>Mark Complete/Incomplete:</p>
+                                            <input
+                                                type="checkbox"
+                                                checked={subtask.completion_status}
+                                                onChange={() => handleSubtaskCompletion(subtask.id, !subtask.completion_status)}
+                                            />
+                                        </div>
                                     </div>
                                 ))}
                             </ul>
@@ -455,7 +413,7 @@ function ProjectPage() {
                             </form>
                         </div>
     
-                        <div className={modalOpen ? "modal-open" : "modal"}>
+                        <div className={`modal ${modalOpen ? 'modal-open' : ''}`}>
                             <div className="modal-content">
                                 <span className="close" onClick={closeModal}>&times;</span>
                                 <div className="modal-body">
